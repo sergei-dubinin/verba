@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Транскрипт — удаление записи</title>
+<!-- Макет экрана reco. Источник: docs/design-prompt.md, холст «reco — экраны». Правки вносятся в холсте и выгружаются сюда. -->
+<style>
+body{margin:0;background:#ffffff;color:#1d1d1f;font-family:"SF Pro Text",system-ui,-apple-system,BlinkMacSystemFont,Inter,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#0066cc;text-decoration:none}
+a:hover{color:#0066cc}
+button{font:inherit;color:inherit}
+p{margin:0}
+</style>
+</head>
+<body>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #ffffff; position: relative; overflow: hidden;">
+
+<div style="height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 12px; background: rgba(245, 245, 247, 0.8); border-bottom: 1px solid rgba(0, 0, 0, 0.08);">
+<div style="display: flex; align-items: center; gap: 4px; height: 44px; padding: 0 4px; font-size: 17px; letter-spacing: -0.374px; color: #0066cc;">
+<svg width="9" height="16" viewBox="0 0 9 16" fill="none" aria-hidden="true"><path d="M8 1L1 8L8 15" stroke="#0066cc" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>Записи</span>
+</div>
+<div style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+<svg width="18" height="4" viewBox="0 0 18 4" fill="none" aria-hidden="true"><circle cx="2" cy="2" r="1.8" fill="#0066cc"></circle><circle cx="9" cy="2" r="1.8" fill="#0066cc"></circle><circle cx="16" cy="2" r="1.8" fill="#0066cc"></circle></svg>
+</div>
+</div>
+
+<div style="padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 6px;">
+<h1 style="margin: 0; font-size: 34px; line-height: 1.15; font-weight: 600; letter-spacing: -0.374px; color: #1d1d1f;">Созвон с Ивановым</h1>
+<p style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #7a7a7a; font-variant-numeric: tabular-nums;">19 сентября, 14:05 · 42 мин · 3 спикера · Альфа — CRM</p>
+</div>
+
+<div style="padding: 0 20px;">
+<div>
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #8944ab;">Спикер 1</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #7a7a7a; font-variant-numeric: tabular-nums;">00:00:04</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #1d1d1f;">Давайте начнём с интеграции. Мы в прошлый раз остановились на том, что Jira синкается раз в час.</p>
+</div>
+<div style="margin-top: 32px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #007a6c;">Спикер 2</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #7a7a7a; font-variant-numeric: tabular-nums;">00:00:15</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #1d1d1f;">Да, я посмотрел. Там можно перейти на webhooks, тогда задержки почти не будет.</p>
+</div>
+</div>
+
+<div style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center;">
+<div style="width: 280px; background: rgba(255, 255, 255, 0.96); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-radius: 18px; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.22);">
+<div style="padding: 20px 18px 16px; display: flex; flex-direction: column; gap: 6px;">
+<h2 style="margin: 0; text-align: center; font-size: 17px; line-height: 1.3; font-weight: 600; letter-spacing: -0.374px; color: #1d1d1f;">Удалить запись вместе с аудио?</h2>
+<p style="text-align: center; font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #7a7a7a;">Это нельзя отменить.</p>
+</div>
+<div style="height: 1px; background: #e0e0e0;"></div>
+<div style="display: flex;">
+<button type="button" style="flex-grow: 1; height: 46px; border: 0; background: transparent; font-size: 17px; letter-spacing: -0.374px; color: #0066cc;">Отмена</button>
+<div style="width: 1px; background: #e0e0e0;"></div>
+<button type="button" style="flex-grow: 1; height: 46px; border: 0; background: transparent; font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #d70015;">Удалить</button>
+</div>
+</div>
+</div>
+
+</div>
+</body>
+</html>

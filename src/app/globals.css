@@ -1,0 +1,15 @@
+@import "../../docs/design/tokens.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-canvas);
+  color: var(--color-body);
+  font-family: var(--font-text);
+  -webkit-font-smoothing: antialiased;
+}

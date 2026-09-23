@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Транскрипт — переместить в папку</title>
+<!-- Макет экрана reco. Источник: docs/design-prompt.md, холст «reco — экраны». Правки вносятся в холсте и выгружаются сюда. -->
+<style>
+body{margin:0;background:#ffffff;color:#1d1d1f;font-family:"SF Pro Text",system-ui,-apple-system,BlinkMacSystemFont,Inter,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#0066cc;text-decoration:none}
+a:hover{color:#0066cc}
+button{font:inherit;color:inherit}
+p{margin:0}
+</style>
+</head>
+<body>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #ffffff; position: relative; overflow: hidden;">
+
+<div style="height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 12px; background: rgba(245, 245, 247, 0.8); border-bottom: 1px solid rgba(0, 0, 0, 0.08);">
+<div style="display: flex; align-items: center; gap: 4px; height: 44px; padding: 0 4px; font-size: 17px; letter-spacing: -0.374px; color: #0066cc;">
+<svg width="9" height="16" viewBox="0 0 9 16" fill="none" aria-hidden="true"><path d="M8 1L1 8L8 15" stroke="#0066cc" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>Записи</span>
+</div>
+<div style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;">
+<svg width="18" height="4" viewBox="0 0 18 4" fill="none" aria-hidden="true"><circle cx="2" cy="2" r="1.8" fill="#0066cc"></circle><circle cx="9" cy="2" r="1.8" fill="#0066cc"></circle><circle cx="16" cy="2" r="1.8" fill="#0066cc"></circle></svg>
+</div>
+</div>
+
+<div style="padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 6px;">
+<h1 style="margin: 0; font-size: 34px; line-height: 1.15; font-weight: 600; letter-spacing: -0.374px; color: #1d1d1f;">Созвон с Ивановым</h1>
+<p style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #7a7a7a; font-variant-numeric: tabular-nums;">19 сентября, 14:05 · 42 мин · 3 спикера · Альфа — CRM</p>
+</div>
+
+<div style="padding: 0 20px;">
+<div>
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #8944ab;">Спикер 1</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #7a7a7a; font-variant-numeric: tabular-nums;">00:00:04</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #1d1d1f;">Давайте начнём с интеграции. Мы в прошлый раз остановились на том, что Jira синкается раз в час.</p>
+</div>
+</div>
+
+<div style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4);"></div>
+
+<div style="position: absolute; left: 0; right: 0; bottom: 0; background: #ffffff; border-radius: 18px 18px 0 0; box-shadow: 0 -2px 40px rgba(0, 0, 0, 0.22); padding: 8px 20px 28px;">
+<div style="width: 36px; height: 5px; border-radius: 9999px; background: rgba(0, 0, 0, 0.18); margin: 0 auto 4px;"></div>
+<div style="display: flex; align-items: center; height: 44px;">
+<div style="width: 80px;"><button type="button" style="border: 0; background: transparent; padding: 0; font-size: 17px; letter-spacing: -0.374px; color: #0066cc;">Отмена</button></div>
+<div style="flex-grow: 1; text-align: center; font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #1d1d1f;">Переместить в папку</div>
+<div style="width: 80px;"></div>
+</div>
+
+<div style="margin-top: 8px; background: #f5f5f7; border-radius: 18px; overflow: hidden;">
+<button type="button" style="display: flex; align-items: center; justify-content: space-between; width: 100%; height: 52px; padding: 0 16px; border: 0; background: transparent; font-size: 17px; letter-spacing: -0.374px; color: #1d1d1f;">
+<span>Без папки</span>
+</button>
+<div style="height: 1px; background: #e0e0e0; margin-left: 16px;"></div>
+<button type="button" style="display: flex; align-items: center; justify-content: space-between; width: 100%; height: 52px; padding: 0 16px; border: 0; background: transparent; font-size: 17px; letter-spacing: -0.374px; color: #1d1d1f;">
+<span>Иванов — пресейл</span>
+</button>
+<div style="height: 1px; background: #e0e0e0; margin-left: 16px;"></div>
+<button type="button" aria-current="true" style="display: flex; align-items: center; justify-content: space-between; width: 100%; height: 52px; padding: 0 16px; border: 0; background: transparent; font-size: 17px; letter-spacing: -0.374px; color: #1d1d1f;">
+<span>Альфа — CRM</span>
+<svg width="16" height="12" viewBox="0 0 16 12" fill="none" aria-hidden="true"><path d="M1.5 6.5L5.5 10.5L14.5 1.5" stroke="#0066cc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+<div style="height: 1px; background: #e0e0e0; margin-left: 16px;"></div>
+<button type="button" style="display: flex; align-items: center; justify-content: space-between; width: 100%; height: 52px; padding: 0 16px; border: 0; background: transparent; font-size: 17px; letter-spacing: -0.374px; color: #1d1d1f;">
+<span>Интервью</span>
+</button>
+</div>
+</div>
+
+</div>
+</body>
+</html>

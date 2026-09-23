@@ -1,0 +1,123 @@
+/* reco — токены дизайн-системы в виде CSS-переменных.
+   Сгенерировано из tokens.json (источник: дизайн-система reco).
+   Правки — в дизайн-системе, не здесь. */
+
+:root {
+  /* Цвет */
+  --color-primary: #0066cc; /* Action Blue, the only interactive colour */
+  --color-primary-focus: #0071e3; /* Keyboard focus ring (2px solid outline, 2px offset) and the 2px border of a selected option chip */
+  --color-primary-on-dark: #2997ff; /* Text links on dark tiles (surface-tile-1/2/3, 5:1 on tile-1) */
+  --color-ink: #1d1d1f; /* Headlines and body text on canvas, canvas-parchment and surface-pearl (16:1+) */
+  --color-body: #1d1d1f; /* Paragraph text on light surfaces; same tone as ink — one near-black for all copy */
+  --color-body-on-dark: #ffffff; /* All text on dark tiles and on the global nav (surface-black) */
+  --color-body-muted: #cccccc; /* Secondary copy on dark tiles (10:1 on surface-tile-1) where white is too loud */
+  --color-ink-muted-80: #333333; /* Text on surface-pearl buttons and footer body copy on canvas-parchment (11:1) */
+  --color-ink-muted-48: #7a7a7a; /* Disabled button text, legal fine print, timestamps */
+  --color-divider-soft: #f0f0f0; /* The 3px soft ring on pearl capsule buttons; reads as a ring, not a line */
+  --color-hairline: #e0e0e0; /* 1px border on utility cards and option chips */
+  --color-canvas: #ffffff; /* Dominant page and card background */
+  --color-canvas-parchment: #f5f5f7; /* Alternating light tiles, footer, frosted sub-nav and sticky bar (at 80% with backdrop blur), page canvas behind utility cards */
+  --color-surface-pearl: #fafafc; /* Fill of the pearl capsule (secondary) button, so it still reads as a button on canvas-parchment */
+  --color-surface-tile-1: #272729; /* Primary dark tile */
+  --color-surface-tile-2: #2a2a2c; /* A micro-step lighter dark tile, for a dark tile directly above or below surface-tile-1 */
+  --color-surface-tile-3: #252527; /* A micro-step darker dark tile, for the bottom of a stack and player/media frames */
+  --color-surface-black: #000000; /* True void only: the global nav bar, full-bleed media backgrounds */
+  --color-surface-chip-translucent: #d2d2d7; /* Base of the circular icon button over imagery; apply at 64% alpha (rgba(210, 210, 215, 0 */
+  --color-on-primary: #ffffff; /* Text and icons on a primary fill (5 */
+  --color-on-dark: #ffffff; /* Text and icons on ink or surface-black fills (dark utility button, global nav) */
+
+  /* Шрифты */
+  --font-display: "SF Pro Display", system-ui, -apple-system, BlinkMacSystemFont, Inter, sans-serif;
+  --font-text: "SF Pro Text", system-ui, -apple-system, BlinkMacSystemFont, Inter, sans-serif;
+
+  /* Отступы */
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 17px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+  --space-section: 80px;
+
+  /* Радиусы */
+  --radius-none: 0px;
+  --radius-xs: 5px;
+  --radius-sm: 8px;
+  --radius-md: 11px;
+  --radius-lg: 18px;
+  --radius-pill: 9999px;
+  --radius-full: 9999px;
+
+  /* Размеры */
+  --size-touch: 44px;
+  --size-subnav: 52px;
+  --size-sticky-bar: 64px;
+  --measure-text: 980px;
+
+  /* Брейкпоинты */
+  --bp-content-lock: 1440px;
+  --bp-small-desktop: 1068px;
+  --bp-tablet-landscape: 833px;
+  --bp-tablet-portrait: 734px;
+  --bp-phone: 640px;
+  --bp-small-phone: 480px;
+
+  /* Тень */
+  --shadow-product: 3px 5px 30px 0 rgba(0, 0, 0, 0.22);
+
+  /* Материал */
+  --backdrop-frosted: saturate(180%) blur(20px);
+}
+
+/* Типографика: класс на каждый стиль из дизайн-системы */
+.t-hero-display { font-family: var(--font-display); font-size: 56px; line-height: 1.07; font-weight: 600; letter-spacing: -0.28px; }
+.t-display-lg { font-family: var(--font-display); font-size: 40px; line-height: 1.1; font-weight: 600; letter-spacing: 0px; }
+.t-display-md { font-family: var(--font-text); font-size: 34px; line-height: 1.47; font-weight: 600; letter-spacing: -0.374px; }
+.t-lead { font-family: var(--font-display); font-size: 28px; line-height: 1.14; font-weight: 400; letter-spacing: 0.196px; }
+.t-lead-airy { font-family: var(--font-text); font-size: 24px; line-height: 1.5; font-weight: 300; letter-spacing: 0px; }
+.t-tagline { font-family: var(--font-display); font-size: 21px; line-height: 1.19; font-weight: 600; letter-spacing: 0.231px; }
+.t-body-strong { font-family: var(--font-text); font-size: 17px; line-height: 1.24; font-weight: 600; letter-spacing: -0.374px; }
+.t-body { font-family: var(--font-text); font-size: 17px; line-height: 1.47; font-weight: 400; letter-spacing: -0.374px; }
+.t-dense-link { font-family: var(--font-text); font-size: 17px; line-height: 2.41; font-weight: 400; letter-spacing: 0px; }
+.t-caption { font-family: var(--font-text); font-size: 14px; line-height: 1.43; font-weight: 400; letter-spacing: -0.224px; }
+.t-caption-strong { font-family: var(--font-text); font-size: 14px; line-height: 1.29; font-weight: 600; letter-spacing: -0.224px; }
+.t-fine-print { font-family: var(--font-text); font-size: 12px; line-height: 1.0; font-weight: 400; letter-spacing: -0.12px; }
+.t-micro-legal { font-family: var(--font-text); font-size: 10px; line-height: 1.3; font-weight: 400; letter-spacing: -0.08px; }
+.t-button-large { font-family: var(--font-text); font-size: 18px; line-height: 1.0; font-weight: 300; letter-spacing: 0px; }
+.t-button-utility { font-family: var(--font-text); font-size: 14px; line-height: 1.29; font-weight: 400; letter-spacing: -0.224px; }
+.t-nav-link { font-family: var(--font-text); font-size: 12px; line-height: 1.0; font-weight: 400; letter-spacing: -0.12px; }
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* ---- Расширения, которых в дизайн-системе reco пока нет ----
+   Введены при отрисовке экранов; при обновлении системы перенести туда. */
+
+:root {
+  --color-danger: #d70015;            /* ошибки, деструктивные действия на светлом */
+  --color-speaker-1: #8944ab;
+  --color-speaker-2: #007a6c;
+  --color-speaker-3: #b3541e;
+  --color-speaker-4: #248a3d;
+  --color-speaker-5: #b3006b;
+  --color-speaker-6: #3634a3;
+  --scrim: rgba(0, 0, 0, 0.4);        /* затемнение под шторкой, диалогом, алертом */
+  --shadow-sheet: 0 -2px 40px rgba(0, 0, 0, 0.22);
+  --shadow-dialog: 0 10px 40px rgba(0, 0, 0, 0.22);
+  --shadow-menu: 0 8px 30px rgba(0, 0, 0, 0.18);
+}
+
+/* Тёмная тема. В дизайн-системе не описана — значения выведены из её тёмных плиток. */
+[data-theme="dark"] {
+  --color-canvas: #000000;            /* фон страницы */
+  --color-surface-card: #272729;      /* карточки, поля, списки */
+  --color-surface-raised: #2a2a2c;    /* элемент на карточке */
+  --color-ink: #ffffff;
+  --color-body: #ffffff;
+  --color-ink-muted: #a1a1a6;         /* метаданные, таймкоды */
+  --color-hairline: rgba(255, 255, 255, 0.12);
+  --color-link: #2997ff;              /* primary-on-dark */
+  --color-danger: #ff6961;
+  --color-speaker-1: #da8fff;
+  --color-speaker-2: #66d4cf;
+  --color-speaker-3: #ff9f0a;
+}

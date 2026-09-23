@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Список записей — тёмная тема</title>
+<!-- Макет экрана reco. Источник: docs/design-prompt.md, холст «reco — экраны». Правки вносятся в холсте и выгружаются сюда. -->
+<style>
+body{margin:0;background:#000000;color:#ffffff;font-family:"SF Pro Text",system-ui,-apple-system,BlinkMacSystemFont,Inter,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#2997ff;text-decoration:none}
+a:hover{color:#2997ff}
+button,input,select{font:inherit;color:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid #0071e3;outline-offset:2px}
+@keyframes dc-spin{to{transform:rotate(360deg)}}
+.dc-spinner{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,0.18);border-top-color:#a1a1a6;animation:dc-spin 0.9s linear infinite;flex-shrink:0}
+</style>
+</head>
+<body>
+<div style="width: 390px; height: 1000px; box-sizing: border-box; background: #000000; position: relative; overflow: hidden;">
+
+<div style="height: 52px; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.7); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.12);">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #ffffff;">Записи</div>
+</div>
+
+<div style="display: flex; gap: 8px; padding: 12px 16px; overflow: hidden;">
+<button type="button" style="flex-shrink: 0; height: 34px; padding: 0 14px; border: 2px solid #0071e3; border-radius: 9999px; background: #272729; font-size: 14px; letter-spacing: -0.224px; color: #ffffff;">Все</button>
+<button type="button" style="flex-shrink: 0; height: 34px; padding: 0 14px; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 9999px; background: #272729; font-size: 14px; letter-spacing: -0.224px; color: #ffffff;">Без папки</button>
+<button type="button" style="flex-shrink: 0; height: 34px; padding: 0 14px; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 9999px; background: #272729; font-size: 14px; letter-spacing: -0.224px; color: #ffffff;">Иванов — пресейл</button>
+<button type="button" style="flex-shrink: 0; height: 34px; padding: 0 14px; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 9999px; background: #272729; font-size: 14px; letter-spacing: -0.224px; color: #ffffff;">Альфа — CRM</button>
+</div>
+
+<div style="padding: 4px 16px 120px;">
+
+<h2 style="margin: 12px 4px 8px; font-size: 14px; line-height: 1.29; font-weight: 600; letter-spacing: -0.224px; color: #ffffff;">Сегодня</h2>
+<div style="background: #272729; border-radius: 18px; overflow: hidden;">
+
+<a href="transcript-dark.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 16px; color: #ffffff;">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px;">19 сен, 42 мин, 3 спикера</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #a1a1a6; font-variant-numeric: tabular-nums;">14:05 · 42 мин · Альфа — CRM</div>
+</div>
+<svg width="8" height="14" viewBox="0 0 8 14" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M1 1L7 7L1 13" stroke="#a1a1a6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</a>
+
+<div style="height: 1px; background: rgba(255, 255, 255, 0.12); margin-left: 16px;"></div>
+
+<a href="transcript-dark.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 16px; color: #ffffff;">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px;">Созвон с Ивановым</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #a1a1a6; font-variant-numeric: tabular-nums;">11:20 · 28 мин · Иванов — пресейл</div>
+</div>
+<svg width="8" height="14" viewBox="0 0 8 14" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M1 1L7 7L1 13" stroke="#a1a1a6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</a>
+
+<div style="height: 1px; background: rgba(255, 255, 255, 0.12); margin-left: 16px;"></div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 11px 16px;">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #ffffff;">19 сен, 1 ч 04 мин</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #a1a1a6; font-variant-numeric: tabular-nums;">09:48 · 1 ч 04 мин · Без папки</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #a1a1a6;">Обрабатывается, обычно это занимает несколько минут</div>
+</div>
+<span class="dc-spinner" aria-hidden="true"></span>
+</div>
+
+</div>
+
+<h2 style="margin: 24px 4px 8px; font-size: 14px; line-height: 1.29; font-weight: 600; letter-spacing: -0.224px; color: #ffffff;">Вчера</h2>
+<div style="background: #272729; border-radius: 18px; overflow: hidden;">
+
+<a href="transcript-dark.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 16px; color: #ffffff;">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px;">18 сен, 1 ч 12 мин, 2 спикера</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #a1a1a6; font-variant-numeric: tabular-nums;">16:40 · 1 ч 12 мин · Интервью</div>
+</div>
+<svg width="8" height="14" viewBox="0 0 8 14" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M1 1L7 7L1 13" stroke="#a1a1a6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</a>
+
+<div style="height: 1px; background: rgba(255, 255, 255, 0.12); margin-left: 16px;"></div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 11px 16px;">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #ffffff;">18 сен, 12 мин</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #a1a1a6; font-variant-numeric: tabular-nums;">12:03 · 12 мин · Без папки</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #ff6961;">Не удалось распознать запись</div>
+</div>
+<button type="button" style="flex-shrink: 0; height: 32px; padding: 0 12px; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px; background: #2a2a2c; font-size: 14px; letter-spacing: -0.224px; color: #2997ff;">Повторить</button>
+</div>
+
+</div>
+
+<h2 style="margin: 24px 4px 8px; font-size: 14px; line-height: 1.29; font-weight: 600; letter-spacing: -0.224px; color: #ffffff;">На этой неделе</h2>
+<div style="background: #272729; border-radius: 18px; overflow: hidden;">
+
+<a href="transcript-dark.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 16px; color: #ffffff;">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px;">17 сен, 35 мин, 2 спикера</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #a1a1a6; font-variant-numeric: tabular-nums;">17 сен, 10:15 · 35 мин · Иванов — пресейл</div>
+</div>
+<svg width="8" height="14" viewBox="0 0 8 14" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M1 1L7 7L1 13" stroke="#a1a1a6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</a>
+
+<div style="height: 1px; background: rgba(255, 255, 255, 0.12); margin-left: 16px;"></div>
+
+<a href="transcript-dark.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 16px; color: #ffffff;">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px;">16 сен, 51 мин, 4 спикера</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #a1a1a6; font-variant-numeric: tabular-nums;">16 сен, 15:30 · 51 мин · Альфа — CRM</div>
+</div>
+<svg width="8" height="14" viewBox="0 0 8 14" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M1 1L7 7L1 13" stroke="#a1a1a6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</a>
+
+<div style="height: 1px; background: rgba(255, 255, 255, 0.12); margin-left: 16px;"></div>
+
+<a href="transcript-dark.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 16px; color: #ffffff;">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px;">Интервью с кандидатом</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #a1a1a6; font-variant-numeric: tabular-nums;">15 сен, 11:00 · 47 мин · Интервью</div>
+</div>
+<svg width="8" height="14" viewBox="0 0 8 14" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M1 1L7 7L1 13" stroke="#a1a1a6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</a>
+
+<div style="height: 1px; background: rgba(255, 255, 255, 0.12); margin-left: 16px;"></div>
+
+<a href="transcript-dark.html" style="display: flex; align-items: center; gap: 12px; padding: 11px 16px; color: #ffffff;">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px;">15 сен, 23 мин, 2 спикера</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #a1a1a6; font-variant-numeric: tabular-nums;">15 сен, 09:05 · 23 мин · Без папки</div>
+</div>
+<svg width="8" height="14" viewBox="0 0 8 14" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M1 1L7 7L1 13" stroke="#a1a1a6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</a>
+
+</div>
+</div>
+
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 20px 24px; background: rgba(0, 0, 0, 0.7); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid rgba(255, 255, 255, 0.12);">
+<button type="button" style="width: 100%; height: 52px; border: 0; border-radius: 9999px; background: #0066cc; color: #ffffff; font-size: 18px; font-weight: 300;">Загрузить</button>
+</div>
+
+</div>
+</body>
+</html>

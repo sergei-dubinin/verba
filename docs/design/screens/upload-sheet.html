@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Загрузка — шторка</title>
+<!-- Макет экрана reco. Источник: docs/design-prompt.md, холст «reco — экраны». Правки вносятся в холсте и выгружаются сюда. -->
+<style>
+body{margin:0;background:#f5f5f7;color:#1d1d1f;font-family:"SF Pro Text",system-ui,-apple-system,BlinkMacSystemFont,Inter,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#0066cc;text-decoration:none}
+a:hover{color:#0066cc}
+button,input,select{font:inherit;color:inherit}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #0071e3;outline-offset:2px}
+</style>
+</head>
+<body>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #f5f5f7; position: relative; overflow: hidden;">
+
+<div style="height: 52px; display: flex; align-items: center; justify-content: center; background: rgba(245, 245, 247, 0.8); border-bottom: 1px solid rgba(0, 0, 0, 0.08);">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #1d1d1f;">Записи</div>
+</div>
+<div style="display: flex; gap: 8px; padding: 12px 16px; overflow: hidden;">
+<div style="flex-shrink: 0; height: 34px; padding: 0 14px; border: 2px solid #0071e3; border-radius: 9999px; background: #ffffff; font-size: 14px; line-height: 30px; color: #1d1d1f;">Все</div>
+<div style="flex-shrink: 0; height: 34px; padding: 0 14px; border: 1px solid #e0e0e0; border-radius: 9999px; background: #ffffff; font-size: 14px; line-height: 32px; color: #1d1d1f;">Без папки</div>
+<div style="flex-shrink: 0; height: 34px; padding: 0 14px; border: 1px solid #e0e0e0; border-radius: 9999px; background: #ffffff; font-size: 14px; line-height: 32px; color: #1d1d1f;">Иванов — пресейл</div>
+</div>
+<div style="padding: 4px 16px;">
+<h2 style="margin: 12px 4px 8px; font-size: 14px; line-height: 1.29; font-weight: 600; letter-spacing: -0.224px; color: #1d1d1f;">Сегодня</h2>
+<div style="background: #ffffff; border-radius: 18px; overflow: hidden;">
+<div style="display: flex; flex-direction: column; gap: 3px; padding: 11px 16px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px;">19 сен, 42 мин, 3 спикера</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #7a7a7a; font-variant-numeric: tabular-nums;">14:05 · 42 мин · Альфа — CRM</div>
+</div>
+<div style="height: 1px; background: #e0e0e0; margin-left: 16px;"></div>
+<div style="display: flex; flex-direction: column; gap: 3px; padding: 11px 16px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px;">Созвон с Ивановым</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #7a7a7a; font-variant-numeric: tabular-nums;">11:20 · 28 мин · Иванов — пресейл</div>
+</div>
+</div>
+</div>
+
+<div style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4);"></div>
+
+<div style="position: absolute; left: 0; right: 0; bottom: 0; background: #ffffff; border-radius: 18px 18px 0 0; box-shadow: 0 -2px 40px rgba(0, 0, 0, 0.22); padding: 8px 20px 28px;">
+<div style="width: 36px; height: 5px; border-radius: 9999px; background: rgba(0, 0, 0, 0.18); margin: 0 auto 4px;"></div>
+<div style="display: flex; align-items: center; height: 44px;">
+<div style="width: 80px;"><a href="list.html" style="font-size: 17px; letter-spacing: -0.374px;">Отмена</a></div>
+<div style="flex-grow: 1; text-align: center; font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #1d1d1f;">Загрузка</div>
+<div style="width: 80px;"></div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
+<div style="background: #f5f5f7; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 4px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #1d1d1f;">Новая запись 42.m4a</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #7a7a7a; font-variant-numeric: tabular-nums;">38,4 МБ · 42 мин</div>
+</div>
+
+<div style="background: #f5f5f7; border-radius: 18px; height: 52px; padding: 0 16px; display: flex; align-items: center; gap: 12px;">
+<label for="folder" style="font-size: 17px; letter-spacing: -0.374px; color: #1d1d1f;">Папка</label>
+<select id="folder" style="flex-grow: 1; min-width: 0; appearance: none; -webkit-appearance: none; border: 0; background: transparent; text-align: right; font-size: 17px; letter-spacing: -0.374px; color: #0066cc;">
+<option>Без папки</option>
+<option>Иванов — пресейл</option>
+<option>Альфа — CRM</option>
+<option>Интервью</option>
+<option>+ Новая папка</option>
+</select>
+<svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M1 1.5L6 6.5L11 1.5" stroke="#0066cc" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+
+<button type="button" style="height: 52px; margin-top: 8px; border: 0; border-radius: 9999px; background: #0066cc; color: #ffffff; font-size: 18px; font-weight: 300;">Загрузить</button>
+<p style="margin: 0; text-align: center; font-size: 12px; line-height: 1.4; letter-spacing: -0.12px; color: #7a7a7a;">Поддерживаются записи Диктофона iPhone (.m4a)</p>
+</div>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Загрузка — диалог на десктопе</title>
+<!-- Макет экрана reco. Источник: docs/design-prompt.md, холст «reco — экраны». Правки вносятся в холсте и выгружаются сюда. -->
+<style>
+body{margin:0;background:#ffffff;color:#1d1d1f;font-family:"SF Pro Text",system-ui,-apple-system,BlinkMacSystemFont,Inter,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#0066cc;text-decoration:none}
+a:hover{color:#0066cc}
+button,input,select{font:inherit;color:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid #0071e3;outline-offset:2px}
+@keyframes dc-spin{to{transform:rotate(360deg)}}
+.dc-spinner{width:16px;height:16px;border-radius:50%;border:2px solid rgba(0,0,0,0.12);border-top-color:#7a7a7a;animation:dc-spin 0.9s linear infinite;flex-shrink:0}
+</style>
+</head>
+<body>
+<div style="width: 1280px; height: 880px; box-sizing: border-box; background: #ffffff; display: flex; overflow: hidden; position: relative;">
+
+<div style="width: 260px; flex-shrink: 0; box-sizing: border-box; background: #f5f5f7; border-right: 1px solid rgba(0, 0, 0, 0.08); padding: 20px 12px; display: flex; flex-direction: column; gap: 20px;">
+<div style="padding: 0 10px; font-family: 'SF Pro Display', system-ui, -apple-system, BlinkMacSystemFont, Inter, sans-serif; font-size: 21px; font-weight: 600; letter-spacing: 0.231px; color: #1d1d1f;">reco</div>
+<div>
+<div style="padding: 0 10px 6px; font-size: 14px; line-height: 1.29; font-weight: 600; letter-spacing: -0.224px; color: #7a7a7a;">Папки</div>
+<a href="list-desktop.html" style="display: block; height: 36px; line-height: 36px; padding: 0 10px; border-radius: 8px; background: #0066cc; color: #ffffff; font-size: 17px; letter-spacing: -0.374px;">Все</a>
+<a href="list-desktop.html" style="display: block; height: 36px; line-height: 36px; padding: 0 10px; border-radius: 8px; color: #1d1d1f; font-size: 17px; letter-spacing: -0.374px;">Без папки</a>
+<div style="display: flex; align-items: center; gap: 4px;">
+<a href="list-desktop.html" style="flex-grow: 1; min-width: 0; height: 36px; line-height: 36px; padding: 0 10px; border-radius: 8px; color: #1d1d1f; font-size: 17px; letter-spacing: -0.374px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Иванов — пресейл</a>
+<button type="button" aria-label="Меню папки «Иванов — пресейл»" style="flex-shrink: 0; width: 28px; height: 28px; border: 0; border-radius: 9999px; background: transparent; display: flex; align-items: center; justify-content: center;">
+<svg width="16" height="4" viewBox="0 0 16 4" fill="none" aria-hidden="true"><circle cx="2" cy="2" r="1.6" fill="#7a7a7a"></circle><circle cx="8" cy="2" r="1.6" fill="#7a7a7a"></circle><circle cx="14" cy="2" r="1.6" fill="#7a7a7a"></circle></svg>
+</button>
+</div>
+<div style="display: flex; align-items: center; gap: 4px;">
+<a href="list-desktop.html" style="flex-grow: 1; min-width: 0; height: 36px; line-height: 36px; padding: 0 10px; border-radius: 8px; color: #1d1d1f; font-size: 17px; letter-spacing: -0.374px;">Альфа — CRM</a>
+<button type="button" aria-label="Меню папки «Альфа — CRM»" style="flex-shrink: 0; width: 28px; height: 28px; border: 0; border-radius: 9999px; background: transparent; display: flex; align-items: center; justify-content: center;">
+<svg width="16" height="4" viewBox="0 0 16 4" fill="none" aria-hidden="true"><circle cx="2" cy="2" r="1.6" fill="#7a7a7a"></circle><circle cx="8" cy="2" r="1.6" fill="#7a7a7a"></circle><circle cx="14" cy="2" r="1.6" fill="#7a7a7a"></circle></svg>
+</button>
+</div>
+<div style="display: flex; align-items: center; gap: 4px;">
+<a href="list-desktop.html" style="flex-grow: 1; min-width: 0; height: 36px; line-height: 36px; padding: 0 10px; border-radius: 8px; color: #1d1d1f; font-size: 17px; letter-spacing: -0.374px;">Интервью</a>
+<button type="button" aria-label="Меню папки «Интервью»" style="flex-shrink: 0; width: 28px; height: 28px; border: 0; border-radius: 9999px; background: transparent; display: flex; align-items: center; justify-content: center;">
+<svg width="16" height="4" viewBox="0 0 16 4" fill="none" aria-hidden="true"><circle cx="2" cy="2" r="1.6" fill="#7a7a7a"></circle><circle cx="8" cy="2" r="1.6" fill="#7a7a7a"></circle><circle cx="14" cy="2" r="1.6" fill="#7a7a7a"></circle></svg>
+</button>
+</div>
+</div>
+</div>
+
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column;">
+
+<div style="height: 60px; flex-shrink: 0; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 32px; background: rgba(245, 245, 247, 0.8); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid rgba(0, 0, 0, 0.08);">
+<h1 style="margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #1d1d1f;">Все записи</h1>
+<a href="list-desktop-upload.html" style="display: flex; align-items: center; justify-content: center; height: 40px; padding: 0 22px; border-radius: 9999px; background: #0066cc; color: #ffffff; font-size: 14px; letter-spacing: -0.224px;">Загрузить</a>
+</div>
+
+<div style="flex-grow: 1; min-height: 0; overflow: hidden; padding: 8px 32px 32px;">
+<div style="max-width: 980px;">
+
+<h2 style="margin: 20px 0 4px; font-size: 14px; line-height: 1.29; font-weight: 600; letter-spacing: -0.224px; color: #1d1d1f;">Сегодня</h2>
+
+<a href="transcript-desktop.html" style="display: flex; align-items: center; gap: 24px; padding: 13px 4px; border-bottom: 1px solid #e0e0e0; color: #1d1d1f;">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px;">19 сен, 42 мин, 3 спикера</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #7a7a7a; font-variant-numeric: tabular-nums;">14:05 · 42 мин</div>
+</div>
+<div style="flex-shrink: 0; font-size: 14px; letter-spacing: -0.224px; color: #7a7a7a;">Альфа — CRM</div>
+</a>
+
+<a href="transcript-desktop.html" style="display: flex; align-items: center; gap: 24px; padding: 13px 4px; border-bottom: 1px solid #e0e0e0; color: #1d1d1f;">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px;">Созвон с Ивановым</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #7a7a7a; font-variant-numeric: tabular-nums;">11:20 · 28 мин</div>
+</div>
+<div style="flex-shrink: 0; font-size: 14px; letter-spacing: -0.224px; color: #7a7a7a;">Иванов — пресейл</div>
+</a>
+
+<div style="display: flex; align-items: center; gap: 24px; padding: 13px 4px; border-bottom: 1px solid #e0e0e0;">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #1d1d1f;">19 сен, 1 ч 04 мин</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #7a7a7a; font-variant-numeric: tabular-nums;">09:48 · 1 ч 04 мин · Обрабатывается, обычно это занимает несколько минут</div>
+</div>
+<span class="dc-spinner" aria-hidden="true"></span>
+<div style="flex-shrink: 0; font-size: 14px; letter-spacing: -0.224px; color: #7a7a7a;">Без папки</div>
+</div>
+
+<h2 style="margin: 28px 0 4px; font-size: 14px; line-height: 1.29; font-weight: 600; letter-spacing: -0.224px; color: #1d1d1f;">Вчера</h2>
+
+<a href="transcript-desktop.html" style="display: flex; align-items: center; gap: 24px; padding: 13px 4px; border-bottom: 1px solid #e0e0e0; color: #1d1d1f;">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px;">18 сен, 1 ч 12 мин, 2 спикера</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #7a7a7a; font-variant-numeric: tabular-nums;">16:40 · 1 ч 12 мин</div>
+</div>
+<div style="flex-shrink: 0; font-size: 14px; letter-spacing: -0.224px; color: #7a7a7a;">Интервью</div>
+</a>
+
+<div style="display: flex; align-items: center; gap: 16px; padding: 13px 4px; border-bottom: 1px solid #e0e0e0;">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #1d1d1f;">18 сен, 12 мин</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #d70015;">Не удалось распознать запись</div>
+</div>
+<button type="button" style="flex-shrink: 0; height: 32px; padding: 0 12px; border: 1px solid #e0e0e0; border-radius: 8px; background: #ffffff; font-size: 14px; letter-spacing: -0.224px; color: #0066cc;">Повторить</button>
+<div style="flex-shrink: 0; font-size: 14px; letter-spacing: -0.224px; color: #7a7a7a;">Без папки</div>
+</div>
+
+<h2 style="margin: 28px 0 4px; font-size: 14px; line-height: 1.29; font-weight: 600; letter-spacing: -0.224px; color: #1d1d1f;">На этой неделе</h2>
+
+<a href="transcript-desktop.html" style="display: flex; align-items: center; gap: 24px; padding: 13px 4px; border-bottom: 1px solid #e0e0e0; color: #1d1d1f;">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px;">17 сен, 35 мин, 2 спикера</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #7a7a7a; font-variant-numeric: tabular-nums;">17 сен, 10:15 · 35 мин</div>
+</div>
+<div style="flex-shrink: 0; font-size: 14px; letter-spacing: -0.224px; color: #7a7a7a;">Иванов — пресейл</div>
+</a>
+
+<a href="transcript-desktop.html" style="display: flex; align-items: center; gap: 24px; padding: 13px 4px; border-bottom: 1px solid #e0e0e0; color: #1d1d1f;">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px;">16 сен, 51 мин, 4 спикера</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #7a7a7a; font-variant-numeric: tabular-nums;">16 сен, 15:30 · 51 мин</div>
+</div>
+<div style="flex-shrink: 0; font-size: 14px; letter-spacing: -0.224px; color: #7a7a7a;">Альфа — CRM</div>
+</a>
+
+<a href="transcript-desktop.html" style="display: flex; align-items: center; gap: 24px; padding: 13px 4px; border-bottom: 1px solid #e0e0e0; color: #1d1d1f;">
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px;">Интервью с кандидатом</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #7a7a7a; font-variant-numeric: tabular-nums;">15 сен, 11:00 · 47 мин</div>
+</div>
+<div style="flex-shrink: 0; font-size: 14px; letter-spacing: -0.224px; color: #7a7a7a;">Интервью</div>
+</a>
+
+</div>
+</div>
+</div>
+
+<div style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center;">
+<div style="width: 460px; box-sizing: border-box; background: #ffffff; border-radius: 18px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.22); padding: 24px;">
+<h2 style="margin: 0 0 17px; font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #1d1d1f;">Загрузка</h2>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="background: #f5f5f7; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 4px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #1d1d1f;">Новая запись 42.m4a</div>
+<div style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #7a7a7a; font-variant-numeric: tabular-nums;">38,4 МБ · 42 мин</div>
+</div>
+<div style="background: #f5f5f7; border-radius: 18px; height: 52px; padding: 0 16px; display: flex; align-items: center; gap: 12px;">
+<label for="folder-desktop" style="font-size: 17px; letter-spacing: -0.374px; color: #1d1d1f;">Папка</label>
+<select id="folder-desktop" style="flex-grow: 1; min-width: 0; appearance: none; -webkit-appearance: none; border: 0; background: transparent; text-align: right; font-size: 17px; letter-spacing: -0.374px; color: #0066cc;">
+<option>Без папки</option>
+<option>Иванов — пресейл</option>
+<option>Альфа — CRM</option>
+<option>Интервью</option>
+<option>+ Новая папка</option>
+</select>
+<svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true" style="flex-shrink: 0;"><path d="M1 1.5L6 6.5L11 1.5" stroke="#0066cc" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 24px;">
+<p style="margin: 0; font-size: 12px; line-height: 1.4; letter-spacing: -0.12px; color: #7a7a7a;">Поддерживаются записи Диктофона iPhone (.m4a)</p>
+<div style="display: flex; gap: 8px; flex-shrink: 0;">
+<a href="list-desktop.html" style="display: flex; align-items: center; justify-content: center; height: 40px; padding: 0 20px; border: 1px solid #0066cc; border-radius: 9999px; background: #ffffff; font-size: 14px; letter-spacing: -0.224px; color: #0066cc;">Отмена</a>
+<button type="button" style="height: 40px; padding: 0 22px; border: 0; border-radius: 9999px; background: #0066cc; color: #ffffff; font-size: 14px; letter-spacing: -0.224px;">Загрузить</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

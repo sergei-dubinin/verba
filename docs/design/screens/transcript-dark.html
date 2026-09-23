@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Транскрипт — тёмная тема</title>
+<!-- Макет экрана reco. Источник: docs/design-prompt.md, холст «reco — экраны». Правки вносятся в холсте и выгружаются сюда. -->
+<style>
+body{margin:0;background:#000000;color:#ffffff;font-family:"SF Pro Text",system-ui,-apple-system,BlinkMacSystemFont,Inter,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#2997ff;text-decoration:none}
+a:hover{color:#2997ff}
+button{font:inherit;color:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid #0071e3;outline-offset:2px}
+p{margin:0}
+</style>
+</head>
+<body>
+<div style="width: 390px; height: 2400px; box-sizing: border-box; background: #000000; position: relative; overflow: hidden;">
+
+<div style="height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 12px; background: rgba(0, 0, 0, 0.7); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.12);">
+<a href="list-dark.html" style="display: flex; align-items: center; gap: 4px; height: 44px; padding: 0 4px; font-size: 17px; letter-spacing: -0.374px;">
+<svg width="9" height="16" viewBox="0 0 9 16" fill="none" aria-hidden="true"><path d="M8 1L1 8L8 15" stroke="#2997ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>Записи</span>
+</a>
+<button type="button" aria-label="Меню записи" style="width: 44px; height: 44px; border: 0; border-radius: 9999px; background: transparent; display: flex; align-items: center; justify-content: center;">
+<svg width="18" height="4" viewBox="0 0 18 4" fill="none" aria-hidden="true"><circle cx="2" cy="2" r="1.8" fill="#2997ff"></circle><circle cx="9" cy="2" r="1.8" fill="#2997ff"></circle><circle cx="16" cy="2" r="1.8" fill="#2997ff"></circle></svg>
+</button>
+</div>
+
+<div style="padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 6px;">
+<h1 style="margin: 0; font-size: 34px; line-height: 1.15; font-weight: 600; letter-spacing: -0.374px; color: #ffffff;">Созвон с Ивановым</h1>
+<p style="font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #a1a1a6; font-variant-numeric: tabular-nums;">19 сентября, 14:05 · 42 мин · 3 спикера · Альфа — CRM</p>
+</div>
+
+<div style="padding: 0 20px 48px;">
+
+<div>
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #da8fff;">Спикер 1</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:00:04</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Давайте начнём с интеграции. Мы в прошлый раз остановились на том, что Jira синкается раз в час.</p>
+<div style="margin-top: 12px; font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:00:11</div>
+<p style="margin-top: 4px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">И это, честно говоря, узкое место.</p>
+</div>
+
+<div style="margin-top: 32px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #66d4cf;">Спикер 2</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:00:15</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Да, я посмотрел. Там можно перейти на webhooks, тогда задержки почти не будет.</p>
+</div>
+
+<div style="margin-top: 32px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #ff9f0a;">Спикер 3</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:00:24</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">А по бюджету это во что выливается? Нам же ещё Kubernetes-кластер под staging поднимать.</p>
+</div>
+
+<div style="margin-top: 32px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #66d4cf;">Спикер 2</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:00:31</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">По деньгам почти ничего, это в основном работа на нашей стороне. Дня три, может четыре.</p>
+<div style="margin-top: 12px; font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:00:38</div>
+<p style="margin-top: 4px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Кластер отдельно, это к DevOps-команде.</p>
+</div>
+
+<div style="margin-top: 32px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #da8fff;">Спикер 1</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:00:42</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Окей. Тогда фиксируем webhooks как первый шаг.</p>
+<div style="margin-top: 12px; font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:00:47</div>
+<p style="margin-top: 4px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Второй вопрос — доступы. У вас сейчас у всех один сервисный аккаунт, и по логам непонятно, кто что менял.</p>
+</div>
+
+<div style="margin-top: 32px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #ff9f0a;">Спикер 3</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:01:02</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Это правда. Мы просили SSO ещё весной, но тогда решили отложить.</p>
+<div style="margin-top: 12px; font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:01:09</div>
+<p style="margin-top: 4px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Если сейчас делаем webhooks, может, заодно и доступы разложить?</p>
+</div>
+
+<div style="margin-top: 32px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #66d4cf;">Спикер 2</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:01:16</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Можно, но это уже другой объём. SSO через Keycloak — это минимум две недели с тестированием.</p>
+<div style="margin-top: 12px; font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:01:25</div>
+<p style="margin-top: 4px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Я бы не смешивал в один релиз. Сначала интеграция, потом доступы.</p>
+</div>
+
+<div style="margin-top: 32px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #da8fff;">Спикер 1</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:01:33</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Согласен. Давайте так: в этот спринт webhooks, в следующий — SSO.</p>
+</div>
+
+<div style="margin-top: 32px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #ff9f0a;">Спикер 3</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:01:40</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Тогда мне нужно будет согласовать со своей стороны. Кто у вас подписывает такие вещи?</p>
+</div>
+
+<div style="margin-top: 32px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #66d4cf;">Спикер 2</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:01:48</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Обычно я готовлю оценку, а подписывает руководитель направления.</p>
+<div style="margin-top: 12px; font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:01:55</div>
+<p style="margin-top: 4px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Пришлю в понедельник, если ничего не поменяется.</p>
+</div>
+
+<div style="margin-top: 32px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #da8fff;">Спикер 1</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:02:03</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Хорошо. Ещё по мониторингу: сейчас алерты приходят в общий канал, и их никто не читает.</p>
+<div style="margin-top: 12px; font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:02:12</div>
+<p style="margin-top: 4px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Предлагаю развести по командам и оставить в общем только критичные.</p>
+</div>
+
+<div style="margin-top: 32px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #ff9f0a;">Спикер 3</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:02:21</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Поддерживаю. У нас та же история: Grafana шлёт всё подряд, люди просто мьютят канал.</p>
+</div>
+
+<div style="margin-top: 32px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #66d4cf;">Спикер 2</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:02:30</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Тогда я заведу отдельные routing-правила в Alertmanager. Это быстро, день работы.</p>
+</div>
+
+<div style="margin-top: 32px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #da8fff;">Спикер 1</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:02:37</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Отлично. Давайте резюмирую: webhooks — этот спринт, SSO — следующий, алерты разводим параллельно.</p>
+<div style="margin-top: 12px; font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:02:48</div>
+<p style="margin-top: 4px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Оценку ждём в понедельник. Следующий созвон — в четверг в это же время.</p>
+</div>
+
+<div style="margin-top: 32px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.374px; color: #ff9f0a;">Спикер 3</div>
+<div style="font-size: 13px; letter-spacing: -0.12px; color: #a1a1a6; font-variant-numeric: tabular-nums;">00:02:56</div>
+</div>
+<p style="margin-top: 6px; font-size: 17px; line-height: 1.47; letter-spacing: -0.374px; color: #ffffff;">Договорились. Тогда с меня согласование по доступам до среды.</p>
+</div>
+
+</div>
+</div>
+</body>
+</html>

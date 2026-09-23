@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Вход — десктоп</title>
+<!-- Макет экрана reco. Источник: docs/design-prompt.md, холст «reco — экраны». Правки вносятся в холсте и выгружаются сюда. -->
+<style>
+body{margin:0;background:#f5f5f7;color:#1d1d1f;font-family:"SF Pro Text",system-ui,-apple-system,BlinkMacSystemFont,Inter,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#0066cc;text-decoration:none}
+a:hover{color:#0066cc}
+button,input,select{font:inherit;color:inherit}
+input::placeholder{color:#7a7a7a}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid #0071e3;outline-offset:2px}
+</style>
+</head>
+<body>
+<div style="width: 1280px; height: 800px; box-sizing: border-box; background: #f5f5f7; display: flex; align-items: center; justify-content: center;">
+<div style="width: 380px; display: flex; flex-direction: column; gap: 40px; margin-top: -48px;">
+<h1 style="margin: 0; text-align: center; font-family: 'SF Pro Display', system-ui, -apple-system, BlinkMacSystemFont, Inter, sans-serif; font-size: 56px; line-height: 1.07; letter-spacing: -0.28px; font-weight: 600; color: #1d1d1f;">reco</h1>
+<div style="display: flex; flex-direction: column; gap: 24px;">
+<div style="background: #ffffff; border-radius: 18px; overflow: hidden;">
+<div style="display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 16px;">
+<label for="login" style="width: 84px; font-size: 17px; letter-spacing: -0.374px; color: #1d1d1f;">Логин</label>
+<input id="login" type="text" autocomplete="username" placeholder="ivanov" style="flex-grow: 1; min-width: 0; height: 34px; border: 0; background: transparent; font-size: 17px; letter-spacing: -0.374px;">
+</div>
+<div style="height: 1px; background: #e0e0e0; margin-left: 16px;"></div>
+<div style="display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 16px;">
+<label for="password" style="width: 84px; font-size: 17px; letter-spacing: -0.374px; color: #1d1d1f;">Пароль</label>
+<input id="password" type="password" autocomplete="current-password" value="correcthorse" style="flex-grow: 1; min-width: 0; height: 34px; border: 0; background: transparent; font-size: 17px; letter-spacing: -0.374px;">
+</div>
+</div>
+<a href="list-desktop.html" style="display: flex; align-items: center; justify-content: center; height: 52px; border-radius: 9999px; background: #0066cc; color: #ffffff; font-size: 18px; font-weight: 300;">Войти</a>
+<p style="margin: 0; text-align: center; font-size: 14px; line-height: 1.43; letter-spacing: -0.224px; color: #7a7a7a;">Доступ выдаёт администратор</p>
+</div>
+</div>
+</div>
+</body>
+</html>

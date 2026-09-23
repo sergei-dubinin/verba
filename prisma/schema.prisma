@@ -1,0 +1,10 @@
+// Модель данных — docs/architecture.md. Модели добавляются вместе со срезами.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
