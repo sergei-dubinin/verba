@@ -1,0 +1,44 @@
+/* Панель «назад к списку»: transcript.html, transcript-desktop.html. */
+
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  min-height: var(--size-subnav);
+  padding: 0 var(--space-xs) 0 var(--space-sm);
+  background: color-mix(in srgb, var(--color-canvas-parchment) 80%, transparent);
+  backdrop-filter: var(--backdrop-frosted);
+  -webkit-backdrop-filter: var(--backdrop-frosted);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+/* .t-body: ссылка на телефоне 17 px. */
+.back {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xxs);
+  min-height: var(--size-touch);
+  padding: 0 var(--space-xxs);
+  color: var(--color-primary);
+  text-decoration: none;
+  font-family: var(--font-text);
+  font-size: 17px;
+  letter-spacing: -0.374px;
+}
+
+/* 734 px — --bp-tablet-portrait (var() в условии @media не работает).
+   Панель 60 px, ссылка — значения .t-caption. */
+@media (min-width: 734px) {
+  .bar {
+    min-height: calc(var(--size-subnav) + var(--space-xs));
+    padding: 0 var(--space-md) 0 var(--space-lg);
+  }
+
+  .back {
+    gap: var(--space-xs);
+    font-size: 14px;
+    letter-spacing: -0.224px;
+  }
+}

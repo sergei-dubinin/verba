@@ -1,4 +1,5 @@
-/* Список записей, пустое состояние: docs/design/screens/list-empty.html. */
+/* Список записей: docs/design/screens/list.html, list-desktop.html;
+   пустое состояние — list-empty.html. */
 
 .page {
   min-height: 100dvh;
@@ -10,6 +11,7 @@
 .bar {
   position: sticky;
   top: 0;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,4 +39,117 @@
   margin: 0;
   text-align: center;
   color: var(--color-ink-muted-48);
+}
+
+/* Записи по группам дат. На телефоне — белые карточки со строками. */
+
+.list {
+  padding: var(--space-xxs) var(--space-md) var(--space-xxl);
+}
+
+.groupTitle {
+  margin: var(--space-lg) var(--space-xxs) var(--space-xs);
+  color: var(--color-ink);
+}
+
+.group:first-child .groupTitle {
+  margin-top: var(--space-sm);
+}
+
+.card {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--color-canvas);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* Разделитель начинается с отступом слева и доходит до правого края. */
+.item + .item::before {
+  content: "";
+  display: block;
+  height: 1px;
+  margin-left: var(--space-md);
+  background: var(--color-hairline);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.rowText {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxs);
+}
+
+.rowTitle {
+  overflow-wrap: anywhere;
+}
+
+.rowMeta {
+  color: var(--color-ink-muted-48);
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--color-ink-muted-48);
+}
+
+/* 734 px — --bp-tablet-portrait (var() в условии @media не работает).
+   Десктоп: панель 60 px с заголовком слева, плоские строки с линией снизу,
+   колонка --measure-text по центру (сайдбара папок ещё нет). */
+@media (min-width: 734px) {
+  /* Как в list-desktop.html: панель на parchment, область списка белая. */
+  .page {
+    background: var(--color-canvas);
+  }
+
+  .bar {
+    justify-content: flex-start;
+    min-height: calc(var(--size-subnav) + var(--space-xs));
+    padding: 0 var(--space-xl);
+  }
+
+  .list {
+    width: 100%;
+    max-width: calc(var(--measure-text) + 2 * var(--space-xl));
+    margin: 0 auto;
+    padding: var(--space-xs) var(--space-xl) var(--space-xl);
+  }
+
+  .groupTitle {
+    margin: calc(var(--space-lg) + var(--space-xxs)) 0 var(--space-xxs);
+  }
+
+  .group:first-child .groupTitle {
+    margin-top: calc(var(--space-lg) - var(--space-xxs));
+  }
+
+  .card {
+    background: none;
+    border-radius: 0;
+  }
+
+  .item + .item::before {
+    display: none;
+  }
+
+  .row {
+    gap: var(--space-lg);
+    padding: var(--space-sm) var(--space-xxs);
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .chevron {
+    display: none;
+  }
 }

@@ -10,14 +10,15 @@
     "typecheck": "next typegen && tsc --noEmit",
     "postinstall": "prisma generate",
     "db:up": "docker compose up -d",
-    "db:migrate": "prisma migrate dev && prisma generate",
+    "db:migrate": "sh -c 'prisma migrate dev \"$@\" && prisma generate' --",
     "db:studio": "prisma studio",
     "test": "bddgen && VERBA_E2E=1 playwright test",
     "test:spec": "bddgen && playwright test --project spec",
     "test:missing": "BDD_MISSING=fail bddgen",
     "test:e2e": "bddgen && VERBA_E2E=1 playwright test --project e2e",
     "user:create": "tsx scripts/user.ts create",
-    "user:passwd": "tsx scripts/user.ts passwd"
+    "user:passwd": "tsx scripts/user.ts passwd",
+    "demo:seed": "tsx scripts/demo.ts"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.1",

@@ -1,8 +1,8 @@
 // Модель данных — docs/architecture.md. Модели добавляются вместе со срезами.
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
   // CommonJS: доменные шаги импортируют клиент в процессе Playwright, а он
   // собирает TypeScript в CommonJS, где import.meta недоступен.
   moduleFormat = "cjs"
@@ -13,12 +13,13 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(uuid()) @db.Uuid
-  login        String    @unique
-  passwordHash String    @map("password_hash")
+  id           String      @id @default(uuid()) @db.Uuid
+  login        String      @unique
+  passwordHash String      @map("password_hash")
   name         String
-  createdAt    DateTime  @default(now()) @map("created_at")
+  createdAt    DateTime    @default(now()) @map("created_at")
   sessions     Session[]
+  recordings   Recording[]
 
   @@map("user")
 }
@@ -34,4 +35,72 @@ model Session {
 
   @@index([userId])
   @@map("session")
+}
+
+enum RecordingStatus {
+  uploaded
+  processing
+  done
+  failed
+
+  @@map("recording_status")
+}
+
+// Запись. Название пользователя — в title; пустое → автоназвание, которое
+// считается при чтении (BR-14). folder_id появится вместе с папками.
+model Recording {
+  id            String          @id @default(uuid()) @db.Uuid
+  // Без каскада: удалить пользователя с записями нельзя, иначе на диске
+  // останутся аудиофайлы без строк.
+  ownerId       String          @map("owner_id") @db.Uuid
+  owner         User            @relation(fields: [ownerId], references: [id])
+  title         String?
+  audioPath     String          @map("audio_path")
+  durationMs    Int?            @map("duration_ms")
+  status        RecordingStatus
+  error         String?
+  provider      String
+  providerJobId String?         @map("provider_job_id")
+  providerRaw   Json?           @map("provider_raw")
+  createdAt     DateTime        @default(now()) @map("created_at")
+  completedAt   DateTime?       @map("completed_at")
+  speakers      Speaker[]
+  utterances    Utterance[]
+
+  @@index([ownerId, createdAt])
+  @@map("recording")
+}
+
+// Спикер в рамках одной записи. В MVP показывается как «Спикер {ord}».
+model Speaker {
+  id          String      @id @default(uuid()) @db.Uuid
+  recordingId String      @map("recording_id") @db.Uuid
+  recording   Recording   @relation(fields: [recordingId], references: [id], onDelete: Cascade)
+  // Метка провайдера: пользователю не показывается.
+  label       String
+  // Задел на переименование спикера (BR-32); в MVP всегда null.
+  name        String?
+  // Порядок первого появления в записи: 1, 2, 3…
+  ord         Int
+  utterances  Utterance[]
+
+  @@unique([recordingId, ord])
+  @@unique([recordingId, label])
+  @@map("speaker")
+}
+
+model Utterance {
+  id          String    @id @default(uuid()) @db.Uuid
+  recordingId String    @map("recording_id") @db.Uuid
+  recording   Recording @relation(fields: [recordingId], references: [id], onDelete: Cascade)
+  speakerId   String    @map("speaker_id") @db.Uuid
+  speaker     Speaker   @relation(fields: [speakerId], references: [id], onDelete: Cascade)
+  seq         Int
+  startMs     Int       @map("start_ms")
+  endMs       Int       @map("end_ms")
+  text        String
+
+  @@unique([recordingId, seq])
+  @@index([speakerId])
+  @@map("utterance")
 }
