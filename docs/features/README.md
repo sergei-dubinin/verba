@@ -4,7 +4,7 @@
 - **Статус:** сценарии исполняемые ([ADR 0003](../decisions/0003-executable-scenarios.md)).
   Зелёные — `auth.feature` (вертикальные срезы 1 и 2),
   `transcript.feature`, из `recordings.feature` — BR-13 и BR-14
-  (вертикальные срезы 2 и 3), `processing.feature` целиком, из
+  (вертикальные срезы 2 и 3), `processing.feature` целиком (срезы 3 и 3а), из
   `upload.feature` — BR-01, BR-03, BR-20, BR-21 (вертикальный срез 3);
   остальные пропускаются, пока у их шагов нет реализации.
 

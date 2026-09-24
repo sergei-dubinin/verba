@@ -17,7 +17,7 @@
 - `docs/plan/` — план реализации: порядок вертикальных срезов (`README.md`) и план каждого среза (`NN-название.md`). План среза пишется до кода.
 - `src/app/` — экраны и route handlers (Next.js 16, App Router);
   `_lib/session.ts` — `requireUser()`, `src/proxy.ts` — быстрая проверка входа.
-- `src/server/` — сервисы поверх Prisma; `db.ts` — клиент базы, `auth/` — пользователи, пароли, сессии; `recordings/` — список, автоназвание, статусы, конвейер обработки и повтор; `transcript/` — транскрипт записи; `uploads/` — загрузка файла; `audio/` — файлы на диске и длительность из m4a; `processing/` — очередь (BullMQ или `inline`); `stt/` — порт провайдера, фейк, разбор ответа AssemblyAI; `time.ts` — часовой пояс приложения. `src/worker.ts` — воркер обработки.
+- `src/server/` — сервисы поверх Prisma; `db.ts` — клиент базы, `auth/` — пользователи, пароли, сессии; `recordings/` — список, автоназвание, статусы, конвейер обработки и повтор; `transcript/` — транскрипт записи; `uploads/` — загрузка файла; `audio/` — файлы на диске и длительность из m4a; `processing/` — очереди (BullMQ или `inline`), уведомления провайдера, проверка незавершённых записей; `stt/` — порт провайдера, клиент AssemblyAI, фейк; `time.ts` — часовой пояс приложения. `src/worker.ts` — воркер обработки.
 - `steps/` — реализации шагов сценариев: `common/` (подготовка данных),
   `domain/`, `e2e/`; `support/` — фикстуры, тестовая база. Конфиг — `playwright.config.ts`.
 - `scripts/` — команды администратора (`user.ts`) и демо-данные для разработки (`demo.ts`).
@@ -64,14 +64,20 @@ pnpm user:passwd anna      # заодно удаляет все сессии ann
 pnpm demo:seed anna
 ```
 
-Обработка: `pnpm worker` берёт задачи из Redis и отправляет файлы
-провайдеру (`STT_PROVIDER`, пока только `fake`; без воркера записи висят в
-«обрабатывается»). Ответ фейка доставляется вручную — так проверяются
-«готово», «ошибка» и «Повторить»:
+Обработка: `pnpm worker` берёт задачи из Redis, отправляет файлы
+провайдеру и раз в `STT_SWEEP_INTERVAL` проверяет незавершённые записи
+(без воркера записи висят в «обрабатывается»). `STT_PROVIDER`:
+
+- `assemblyai` — настоящий, ключ `ASSEMBLYAI_API_KEY`, регион EU. На
+  `localhost` уведомлений нет (нужны `PUBLIC_URL` и `STT_WEBHOOK_SECRET`),
+  результат забирает проверка — до `STT_SWEEP_INTERVAL` секунд;
+- `fake` — без сети; ответ доставляется вручную, так проверяются
+  «готово», «ошибка» и «Повторить».
 
 ```bash
 pnpm worker
-pnpm stt:deliver --all          # или <recordingId>; --fail — сбой
+pnpm stt:deliver --all          # fake: или <recordingId>; --fail — сбой
+pnpm stt:smoke                  # живой AssemblyAI: meeting.m4a туда и обратно, платно
 ```
 
 Аудио лежит в `AUDIO_DIR` (`data/audio`, не в git).
@@ -112,6 +118,7 @@ pnpm stt:deliver --all          # или <recordingId>; --fail — сбой
 
 - [STT + диаризация: провайдеры](docs/research/2026-09-stt-diarization-providers.md)
 - [Голосовые профили: узнавание спикеров между записями](docs/research/2026-09-voice-profiles.md)
+- [AssemblyAI: запросы, вебхук, удаление, загрузка из Node](docs/research/2026-09-assemblyai.md)
 
 <!-- BEGIN:nextjs-agent-rules -->
 

@@ -20,7 +20,8 @@
     "user:passwd": "tsx scripts/user.ts passwd",
     "demo:seed": "tsx scripts/demo.ts",
     "worker": "tsx --env-file-if-exists=.env src/worker.ts",
-    "stt:deliver": "tsx scripts/stt.ts"
+    "stt:deliver": "tsx scripts/stt.ts deliver",
+    "stt:smoke": "tsx scripts/stt.ts smoke"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.1",

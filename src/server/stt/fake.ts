@@ -1,28 +1,51 @@
 import { randomUUID } from "node:crypto";
 import { parseAssemblyAi } from "./assemblyai/parse";
+import { parseNotification, statusOf } from "./assemblyai/status";
 import type { SttProvider, SttSubmission } from "./provider";
 
-// Фейковый провайдер (ADR 0003): тесты и разработка без сети. Отправку
-// запоминает в памяти процесса, результат сам не присылает — его доставляют
-// шаги сценариев или `pnpm stt:deliver`. Ответы — в формате AssemblyAI,
-// разбирает их настоящий разбор (план среза 3, решения 1 и 7).
+// Фейковый провайдер (ADR 0003): тесты и разработка без сети. Всё — в памяти
+// процесса. Результат сам не появляется: шаг сценария «кладёт» его
+// провайдеру (finish), а дальше его забирают так же, как у настоящего, —
+// по уведомлению или проверкой незавершённых записей (план среза 3а,
+// решения 4 и 12). Ответы — в формате AssemblyAI, разбирает их настоящий
+// разбор.
 
 type FakeProvider = SttProvider & {
   submissions: (SttSubmission & { jobId: string })[];
+  // Ответы провайдера по id задачи; нет ответа — задача ещё идёт.
+  results: Map<string, unknown>;
+  // Задачи, данные которых удалены (forget).
+  forgotten: string[];
+  finish(jobId: string, raw: unknown): void;
   reset(): void;
 };
 
 export const fakeStt: FakeProvider = {
   name: "fake",
   submissions: [],
+  results: new Map(),
+  forgotten: [],
   async submit(submission) {
     const jobId = `fake-${randomUUID()}`;
     this.submissions.push({ ...submission, jobId });
     return { jobId };
   },
+  async status(jobId) {
+    const raw = this.results.get(jobId);
+    return raw === undefined ? { pending: true } : statusOf(raw);
+  },
+  async forget(jobId) {
+    this.forgotten.push(jobId);
+  },
+  parseNotification,
   parse: parseAssemblyAi,
+  finish(jobId, raw) {
+    this.results.set(jobId, raw);
+  },
   reset() {
     this.submissions = [];
+    this.results = new Map();
+    this.forgotten = [];
   },
 };
 

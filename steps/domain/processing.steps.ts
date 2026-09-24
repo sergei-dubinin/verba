@@ -1,30 +1,46 @@
-import { stat } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
+import path from "node:path";
 import { expect } from "@playwright/test";
 import { db } from "@/server/db";
-import { receiveSttResult, retryProcessing } from "@/server/recordings/processing";
+import { acceptSttNotification } from "@/server/processing/notification";
+import { sweepProcessing } from "@/server/processing/sweep";
+import { retryProcessing } from "@/server/recordings/processing";
 import { FAILED_TEXT } from "@/server/recordings/state";
 import { fakeError, fakeStt, fakeTranscript, type FakeUtterance } from "@/server/stt/fake";
 import { getTranscript } from "@/server/transcript/get";
 import { currentUser, numeral } from "../support/data";
-import { Then, When } from "../support/fixtures";
+import { Given, Then, When } from "../support/fixtures";
 import type { ScenarioContext } from "../support/fixtures";
 import { expectState, stateFor } from "../support/state";
 
-// Ответ провайдера приходит так же, как придёт от вебхука (вертикальный
-// срез 3а): по id задачи, который читается из базы — после повтора он новый.
-async function deliver(ctx: ScenarioContext, utterances: FakeUtterance[] | "error") {
+// id задачи провайдера у текущей записи — из базы: после повтора он новый.
+async function currentJobId(ctx: ScenarioContext): Promise<string> {
   const { providerJobId } = await db.recording.findUniqueOrThrow({
     where: { id: ctx.currentRecording!.id },
     select: { providerJobId: true },
   });
   expect(providerJobId, "запись не отправлена провайдеру").toBeTruthy();
-  if (utterances === "error") {
-    const raw = fakeError();
-    await receiveSttResult(providerJobId!, { ok: false, reason: raw.error, raw });
-    return;
-  }
+  return providerJobId!;
+}
+
+// Ответ провайдера приходит так же, как в продукте (план среза 3а,
+// решение 12): провайдер закончил задачу, прислал уведомление с верным
+// секретом, синхронная очередь забрала результат.
+async function deliverRaw(ctx: ScenarioContext, raw: { status: string }) {
+  const jobId = await currentJobId(ctx);
+  fakeStt.finish(jobId, raw);
+  ctx.sttRaw = raw;
+  const result = await acceptSttNotification({
+    secret: process.env.STT_WEBHOOK_SECRET ?? null,
+    body: async () => ({ transcript_id: jobId, status: raw.status }),
+  });
+  expect(result, "уведомление не принято").toBe("accepted");
+}
+
+async function deliver(ctx: ScenarioContext, utterances: FakeUtterance[] | "error") {
+  if (utterances === "error") return deliverRaw(ctx, fakeError());
   ctx.sttUtterances = utterances;
-  await receiveSttResult(providerJobId!, { ok: true, raw: fakeTranscript(utterances) });
+  await deliverRaw(ctx, fakeTranscript(utterances));
 }
 
 When("провайдер возвращает готовый транскрипт", async ({ ctx }) => {
@@ -63,8 +79,12 @@ When("я запускаю обработку повторно", async ({ ctx }) 
   await retryProcessing(currentUser(ctx), ctx.currentRecording!.id);
 });
 
+// Запись дошла до «готово» или «ошибки» — данные её задачи у провайдера
+// удалены (план среза 3а, решение 9).
 Then("запись имеет статус {string}", async ({ ctx }, status: string) => {
   await expectState(ctx, ctx.currentRecording!.id, status);
+  if (status === "обрабатывается") return;
+  expect(fakeStt.forgotten, "данные у провайдера не удалены").toContain(await currentJobId(ctx));
 });
 
 Then("у записи показан статус {string}", async ({ ctx }, status: string) => {
@@ -139,4 +159,56 @@ Then("исходный аудиофайл записи на месте", async (
   expect(ref.audioSize, "запись создана без файла").toBeDefined();
   const row = await db.recording.findUniqueOrThrow({ where: { id: ref.id }, select: { audioPath: true } });
   expect((await stat(row.audioPath)).size).toBe(ref.audioSize);
+});
+
+// Настоящий ответ AssemblyAI, записанный с meeting.m4a (NFR-02).
+When("провайдер возвращает записанный ответ {string}", async ({ ctx }, file: string) => {
+  const raw = JSON.parse(await readFile(path.join("steps/support/stt", file), "utf8"));
+  await deliverRaw(ctx, raw);
+});
+
+// Результат у провайдера есть, уведомления нет. Запись ещё ждёт — иначе
+// следующий шаг ничего бы не доказал.
+Given("провайдер закончил обработку, но уведомление не пришло", async ({ ctx }) => {
+  fakeStt.finish(
+    await currentJobId(ctx),
+    fakeTranscript([{ speaker: "A", startMs: 0, endMs: 3000, text: "Результат без уведомления." }]),
+  );
+  const row = await db.recording.findUniqueOrThrow({ where: { id: ctx.currentRecording!.id } });
+  expect(row.status).toBe("processing");
+});
+
+When("проходит проверка незавершённых записей", async ({ ctx }) => {
+  await sweepProcessing(ctx.now ?? new Date());
+});
+
+// Сырой ответ провайдера хранится, чтобы можно было перепарсить или
+// разобрать сбой (ADR 0001): в базе ровно то, что вернул провайдер.
+Then("ответ провайдера сохранён у записи", async ({ ctx }) => {
+  expect(ctx.sttRaw, "провайдер ещё ничего не вернул").toBeDefined();
+  const row = await db.recording.findUniqueOrThrow({ where: { id: ctx.currentRecording!.id } });
+  expect(row.providerRaw).toEqual(ctx.sttRaw);
+});
+
+// Чужой пароль: провайдер уже закончил, так что принятое уведомление
+// сразу сделало бы запись «готово» — это и проверяют следующие шаги.
+When("приходит уведомление о готовности этой записи с неверным секретом", async ({ ctx }) => {
+  const jobId = await currentJobId(ctx);
+  ctx.notificationResult = await acceptSttNotification({
+    secret: `${process.env.STT_WEBHOOK_SECRET}-wrong`,
+    body: async () => ({ transcript_id: jobId, status: "completed" }),
+  });
+});
+
+Then("уведомление отклонено", async ({ ctx }) => {
+  expect(ctx.notificationResult).toBe("rejected");
+});
+
+// Уведомление ничего не изменило: запись ждёт, результата нет.
+Then("запись по-прежнему обрабатывается", async ({ ctx }) => {
+  const row = await db.recording.findUniqueOrThrow({ where: { id: ctx.currentRecording!.id } });
+  expect(row.status).toBe("processing");
+  expect(row.providerRaw).toBeNull();
+  expect(row.completedAt).toBeNull();
+  expect(await db.utterance.count({ where: { recordingId: row.id } })).toBe(0);
 });

@@ -35,6 +35,24 @@ Given("у меня есть запись в состоянии {string}", async 
   }
 });
 
+// Провайдер получил файл N часов назад и до сих пор не ответил: у фейка по
+// этой задаче ничего нет (план среза 3а, решение 7).
+Given(
+  /^у меня есть запись, которую провайдер обрабатывает уже (\d+) (?:час|часа|часов)$/,
+  async ({ ctx }, hours: string) => {
+    const ref = await createRecording(ctx, currentUser(ctx).id, { status: "processing" });
+    const now = ctx.now ?? new Date();
+    await db.recording.update({
+      where: { id: ref.id },
+      data: {
+        provider: "fake",
+        providerJobId: `fake-${randomUUID()}`,
+        statusChangedAt: new Date(now.getTime() - Number(hours) * 3_600_000),
+      },
+    });
+  },
+);
+
 // Запись после сбоя с настоящим файлом: повтору нужно, что отправлять, а
 // шагу «файл на месте» — что проверять.
 Given("у меня есть запись со статусом {string}", async ({ ctx }, status: string) => {
