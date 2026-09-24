@@ -31,6 +31,10 @@
   cursor: pointer;
 }
 
+.labelDesktop {
+  display: none;
+}
+
 /* В макете #f0f0f0 — ближайший токен parchment. */
 .primary:disabled {
   background: var(--color-canvas-parchment);
@@ -64,10 +68,10 @@
   background: var(--scrim);
 }
 
-/* 36 × 5 px. */
+/* 36 × 5 px; высота — ближайший токен, 4 px. */
 .grabber {
   width: calc(var(--space-xl) + var(--space-xxs));
-  height: calc(var(--space-xxs) + 1px);
+  height: var(--space-xxs);
   margin: 0 auto var(--space-xxs);
   border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--color-ink) 18%, transparent);
@@ -190,8 +194,8 @@
 }
 
 /* 734 px — --bp-tablet-portrait. Десктоп: кнопка в правом краю панели
-   (60 px), диалог 460 px по центру; кнопки 40 px, 14 px (.t-button-utility
-   числами — классы в @media не применить). */
+   (60 px), диалог 460 px по центру; кнопки 40 px с подписью
+   .t-button-utility (PrimaryLabel в upload.tsx). */
 @media (min-width: 734px) {
   .bar {
     top: 0;
@@ -210,11 +214,16 @@
   .primary {
     width: auto;
     min-height: calc(var(--space-xl) + var(--space-xs));
-    padding: 0 calc(var(--space-lg) - 2px);
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.29;
-    letter-spacing: -0.224px;
+    /* В макете 22 px — ближайший токен. */
+    padding: 0 var(--space-lg);
+  }
+
+  .labelPhone {
+    display: none;
+  }
+
+  .labelDesktop {
+    display: inline;
   }
 
   .sheet {

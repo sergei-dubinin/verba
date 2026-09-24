@@ -53,6 +53,20 @@ function readDuration(file: File): Promise<number | null> {
   });
 }
 
+// Подпись главной кнопки: на телефоне — .t-button-large (52 px), на
+// десктопе — .t-button-utility (40 px). Классы типографики в @media не
+// применить, а числа из них копировать нельзя (AGENTS.md), поэтому два
+// варианта, по ширине виден один. Скрытый (display: none) в имя кнопки не
+// входит.
+function PrimaryLabel({ children }: { children: string }) {
+  return (
+    <>
+      <span className={`t-button-large ${styles.labelPhone}`}>{children}</span>
+      <span className={`t-button-utility ${styles.labelDesktop}`}>{children}</span>
+    </>
+  );
+}
+
 export function Upload() {
   const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
@@ -134,8 +148,8 @@ export function Upload() {
   return (
     <>
       <div className={styles.bar}>
-        <button type="button" className={`t-button-large ${styles.primary}`} onClick={choose}>
-          Загрузить
+        <button type="button" className={styles.primary} onClick={choose}>
+          <PrimaryLabel>Загрузить</PrimaryLabel>
         </button>
       </div>
       <input
@@ -212,11 +226,11 @@ export function Upload() {
                 </button>
                 <button
                   type="button"
-                  className={`t-button-large ${styles.primary} ${styles.submit}`}
+                  className={`${styles.primary} ${styles.submit}`}
                   disabled={busy || state.kind === "rejected"}
                   onClick={() => send({ file: state.file, durationMs: state.durationMs })}
                 >
-                  {state.kind === "failed" ? "Загрузить ещё раз" : "Загрузить"}
+                  <PrimaryLabel>{state.kind === "failed" ? "Загрузить ещё раз" : "Загрузить"}</PrimaryLabel>
                 </button>
               </div>
             </div>
