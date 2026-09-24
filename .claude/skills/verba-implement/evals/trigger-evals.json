@@ -1,0 +1,23 @@
+[
+  {"query": "погнали делать срез 1 по docs/plan/01-auth.md, начни с тестовой обвязки — playwright-bdd, два проекта spec и e2e", "should_trigger": true},
+  {"query": "нужен вход: форма логина, сессия в куке, пароли argon2id. требование BR-17", "should_trigger": true},
+  {"query": "почини удаление папки — сейчас записи внутри пропадают вместе с ней, а должны переезжать в корень", "should_trigger": true},
+  {"query": "добавь переименование папки, пустое имя не принимать", "should_trigger": true},
+  {"query": "напиши шаги для сценария «подтверждённое удаление необратимо», фразы уже есть в recordings.feature", "should_trigger": true},
+  {"query": "сделай чтобы загрузка файла на 3 гб не укладывала процесс — надо стримить на диск, а не в память", "should_trigger": true},
+  {"query": "в src/server/auth нужен сервис который проверяет пароль и заводит сессию, а роут /login пусть будет тонкий", "should_trigger": true},
+  {"query": "prisma: добавь модель Folder, каскад на записи, и сделай миграцию", "should_trigger": true},
+  {"query": "test:spec падает на шаге «я вошёл как admin» — пишет что шаг не найден, разберись пожалуйста", "should_trigger": true},
+  {"query": "воркер должен помечать запись как failed если провайдер вернул ошибку, сейчас она висит в processing", "should_trigger": true},
+
+  {"query": "сравни deepgram и assemblyai по цене и качеству диаризации на русском, результат положи в docs/research", "should_trigger": false},
+  {"query": "перевыгрузи макеты из холста в docs/design, там до сих пор reco вместо verba на экране входа", "should_trigger": false},
+  {"query": "что у нас в требованиях сказано про папки? перечисли BR которые их касаются", "should_trigger": false},
+  {"query": "накидай ADR почему redis запускаем с AOF: контекст, решение, последствия", "should_trigger": false},
+  {"query": "docker compose ругается что порт 5433 занят, подними постгрес и редис локально", "should_trigger": false},
+  {"query": "объясни на пальцах как playwright-bdd превращает .feature в тесты playwright, просто хочу понять", "should_trigger": false},
+  {"query": "прочитай docs/plan/01-auth.md и скажи сколько там шагов и что написано в решении 14", "should_trigger": false},
+  {"query": "добавь тёмную тему и фильтр по источнику на страницу docs/agent-skills.html", "should_trigger": false},
+  {"query": "глянь .env.example, нет ли там реальных секретов, и проверь что .gitignore закрывает .env", "should_trigger": false},
+  {"query": "напиши сообщение коммита по текущим изменениям и открой PR, описание на русском", "should_trigger": false}
+]

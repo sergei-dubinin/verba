@@ -9,12 +9,18 @@
   требованию. Станут исполняемыми тестами; требование без сценария не
   считается реализованным.
 - `docs/design-prompt.md` — промпт для генерации дизайна экранов. Обновлять вместе с требованиями к интерфейсу.
+- `docs/design-vercel/DESIGN.md` — альтернативная версия дизайна в эстетике Vercel / Geist, на обсуждении. Действующая версия — `design-prompt.md` и `docs/design/`.
 - `docs/design/` — макеты экранов (`screens/*.html`) и токены (`tokens.css`, `tokens.json`). Читать перед любой работой над интерфейсом.
 - `docs/architecture.md` — текущая архитектура и модель данных. Держать актуальной.
 - `docs/research/` — исследования (дата в имени файла). Читать перед архитектурными решениями.
 - `docs/decisions/` — ADR: принятые решения, `NNNN-название.md` (контекст → решение → последствия).
-- `src/app/` — экраны и route handlers (Next.js 16, App Router).
-- `src/server/` — сервисы поверх Prisma; `db.ts` — клиент базы.
+- `docs/plan/` — план реализации: порядок вертикальных срезов (`README.md`) и план каждого среза (`NN-название.md`). План среза пишется до кода.
+- `src/app/` — экраны и route handlers (Next.js 16, App Router);
+  `_lib/session.ts` — `requireUser()`, `src/proxy.ts` — быстрая проверка входа.
+- `src/server/` — сервисы поверх Prisma; `db.ts` — клиент базы, `auth/` — пользователи, пароли, сессии.
+- `steps/` — реализации шагов сценариев: `common/` (подготовка данных),
+  `domain/`, `e2e/`; `support/` — фикстуры, тестовая база. Конфиг — `playwright.config.ts`.
+- `scripts/` — команды администратора (`user.ts`).
 - `prisma/schema.prisma` — схема БД; клиент генерируется в `src/generated/` (не в git).
 - `docs/agent-skills.html` — реестр скиллов и плагинов агента: что подключено, что рекомендовано и почему, опыт прошлого проекта. Данные — JSON-блок `registry-data` в начале файла.
 
@@ -27,7 +33,29 @@ pnpm db:up          # Postgres :5433 и Redis :6380 в docker compose
 pnpm dev            # http://localhost:3000
 ```
 
-Проверки: `pnpm typecheck`, `pnpm lint`, `pnpm build`. Миграции: `pnpm db:migrate`.
+Проверки: `pnpm typecheck`, `pnpm lint`, `pnpm build`. Миграции: `pnpm db:migrate`
+(Prisma 7 сама клиент не перегенерирует — команда делает `prisma generate`).
+
+Сценарии как тесты ([ADR 0003](docs/decisions/0003-executable-scenarios.md)):
+
+```bash
+pnpm exec playwright install chromium   # один раз, для e2e
+pnpm test:spec      # доменные сценарии, секунды, без Next.js
+pnpm test:e2e       # сценарии @e2e: next build + next start на :3100 в .next-e2e
+pnpm test           # оба
+pnpm test:missing   # какие фразы сценариев ещё без шагов
+```
+
+Тесты работают с базой `verba_test` в том же контейнере (`TEST_DATABASE_URL`
+в `.env`); она создаётся и мигрируется сама, таблицы чистятся перед каждым
+сценарием. Сценарии без реализованных шагов пропускаются.
+
+Пользователи (пароль спрашивается скрыто или читается из stdin):
+
+```bash
+pnpm user:create anna --name "Анна"
+pnpm user:passwd anna      # заодно удаляет все сессии anna
+```
 
 ## Термины
 
@@ -52,9 +80,12 @@ pnpm dev            # http://localhost:3000
   сценарии с тегом `@BR-XX` в `docs/features/`: обновить, удалить или
   оставить как есть осознанно ([ADR 0003](docs/decisions/0003-executable-scenarios.md)).
 - Серверный код → только в `src/server/` (сервисы поверх Prisma). Route
-  handlers, серверные компоненты и воркер — тонкие вызовы этих сервисов,
-  без бизнес-логики ([ADR 0002](docs/decisions/0002-stack-and-hosting.md)).
-- Вёрстка UI → макет из `docs/design/screens/`, значения только через переменные и классы `docs/design/tokens.css`; хексы и размеры из макетов не копировать.
+  handlers, серверные компоненты, воркер, `requireUser()` и команды
+  администратора в `scripts/` — тонкие вызовы этих сервисов, без
+  бизнес-логики ([ADR 0002](docs/decisions/0002-stack-and-hosting.md)).
+- Каждая защищённая страница и каждое действие вызывают `requireUser()`:
+  proxy проверяет только наличие cookie ([ADR 0004](docs/decisions/0004-sessions.md)).
+- Вёрстка UI → макет из `docs/design/screens/`, значения только через переменные и классы `docs/design/tokens.css`; хексы и размеры из макетов не копировать Порядок работы — скилл `verba-ui`.
 - Дизайн правится в холсте «verba — экраны» и перевыгружается в `docs/design/`; файлы там руками не редактировать.
 - Подключил, убрал или создал скилл, плагин, MCP → обновить позицию и журнал в `docs/agent-skills.html`.
 

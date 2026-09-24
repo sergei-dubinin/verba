@@ -10,7 +10,7 @@
     review (pending | accepted | rejected) — итог разбора с пользователем;
     decision — короткая запись решения после разбора;
     next.needs = true — позиция ждёт действия (попадает в фильтр «Ждут действия»).
-  - Любое изменение статуса → запись в journal (новые сверху) и поле updated.
+  - Любое изменение статуса → запись в journal (в конец, по дате) и поле updated.
   - Разделы «Окружение» и «Опыт прошлого проекта» — снимок на дату в заголовке раздела.
     Если окружение поменялось, обновить снимок, а не только статус.
   - Опубликованная копия: https://claude.ai/artifact/AC44zDYdji293FzARTBJnb
@@ -223,7 +223,7 @@
 
 <script type="application/json" id="registry-data">
 {
-  "updated": "2026-09-22",
+  "updated": "2026-09-23",
   "skills": [
     {
       "id": "verba-implement",
@@ -233,22 +233,39 @@
       "status": "on",
       "review": "pending",
       "short": "Работа с кодом через требование и сценарий",
-      "where": "`.claude/skills/verba-implement/SKILL.md` — в проекте, но `.claude/` пока не в git",
-      "what": "Ведёт любую работу с кодом по цепочке «требование → сценарий `.feature` → шаги → сервис в `src/server/`». Сначала красный сценарий, потом реализация.",
+      "where": "`.claude/skills/verba-implement/SKILL.md` — в git",
+      "what": "Ведёт любую работу с кодом по цепочке «требование → сценарий `.feature` → шаги → сервис в `src/server/`». Вертикальный срез или крупная фича начинается с плана в `docs/plan/`, дальше — красный сценарий, потом реализация.",
       "pros": [
         "Единственный процессный скилл проекта: держит BR, сценарии и код в синхроне (ADR 0003).",
         "Ведёт агента к `docs/`, а не копирует оттуда соглашения — не устаревает вместе с ними.",
         "Описание перечисляет бытовые формулировки («почини удаление папки»), чтобы срабатывать без слова «сценарий»."
       ],
       "cons": [
-        "Срабатывание на такие формулировки не проверено.",
-        "`.claude/` не под git — копии могут разойтись, как в прошлом проекте."
+        "Замер 23.09.2026 (20 запросов × 3 прогона, до 4 ходов): срабатывает на 9 из 10 задач с кодом, ни разу — на 10 соседних задачах без кода.",
+        "Стабильный промах — отладка прогона сценариев: «`test:spec` падает, шаг не найден» (1 из 3). Агент начинает чинить сам, не беря скилл.",
+        "На первом ходу агент часто сначала читает файлы и только потом берёт скилл — поэтому замер по одному ходу даёт 6 из 10."
       ],
-      "next": { "text": "Закоммитить и прогнать evals на триггеры", "needs": true },
+      "next": {
+        "text": "Решить, дописывать ли в описание отладку прогона",
+        "needs": true
+      },
       "apply": [
-        { "type": "text", "body": "Добавить `.claude/skills/` в первый коммит проекта." },
-        { "type": "chat", "body": "/skill-creator" },
-        { "type": "text", "body": "Evals для verba-implement на фразах «сделай загрузку», «почини удаление папки», «добавь переименование» — и на заведомо чужих («сравни провайдеров STT»), где скилл срабатывать не должен." }
+        {
+          "type": "text",
+          "body": "Предложенная правка описания — добавить к перечню случаев: «разобраться, почему красный или падает `test:spec`/`test:e2e` (шаг не найден, сценарий не проходит)». После правки перепрогнать замер."
+        },
+        {
+          "type": "text",
+          "body": "Набор запросов и скрипт лежат рядом со скиллом, в `evals/`. Запускать из обычного терминала, где залогинен `claude`:"
+        },
+        {
+          "type": "bash",
+          "body": "rsync -a --exclude node_modules --exclude .git ./ /tmp/verba-probe/"
+        },
+        {
+          "type": "bash",
+          "body": "python3 .claude/skills/verba-implement/evals/measure_triggers.py .claude/skills/verba-implement/evals/trigger-evals.json /tmp/verba-probe 3"
+        }
       ],
       "prior": "Заменяет пару `backend-software-engineer` + `qa-fixture-keeper`. Философия обратная: там «тесты — только по просьбе», здесь сценарий и есть тест.",
       "decision": ""
@@ -270,8 +287,16 @@
       "cons": [
         "Одноимённый плагин из маркетплейса (ревью PR несколькими агентами) дублирует встроенный — его не ставить."
       ],
-      "next": { "text": "Запускать перед коммитом", "needs": false },
-      "apply": [ { "type": "chat", "body": "/code-review high" } ],
+      "next": {
+        "text": "Запускать перед коммитом",
+        "needs": false
+      },
+      "apply": [
+        {
+          "type": "chat",
+          "body": "/code-review high"
+        }
+      ],
       "prior": "В сохранённых сессиях прошлого проекта явных вызовов нет.",
       "decision": ""
     },
@@ -292,8 +317,16 @@
       "cons": [
         "Сам применяет правки — дифф после него надо смотреть."
       ],
-      "next": { "text": "После зелёного прогона, до коммита", "needs": false },
-      "apply": [ { "type": "chat", "body": "/simplify" } ],
+      "next": {
+        "text": "После зелёного прогона, до коммита",
+        "needs": false
+      },
+      "apply": [
+        {
+          "type": "chat",
+          "body": "/simplify"
+        }
+      ],
       "prior": "",
       "decision": ""
     },
@@ -314,8 +347,16 @@
       "cons": [
         "Запускается руками — легко забыть. Страховка на автомате — `security-guidance`."
       ],
-      "next": { "text": "На ветках с входом, загрузкой, вебхуком", "needs": false },
-      "apply": [ { "type": "chat", "body": "/security-review" } ],
+      "next": {
+        "text": "На ветках с входом, загрузкой, вебхуком",
+        "needs": false
+      },
+      "apply": [
+        {
+          "type": "chat",
+          "body": "/security-review"
+        }
+      ],
       "prior": "",
       "decision": ""
     },
@@ -331,13 +372,22 @@
       "what": "Создаёт и правит скиллы, гоняет evals и подбирает описание так, чтобы скилл срабатывал, когда нужно, и молчал, когда не нужно.",
       "pros": [
         "Единственный способ проверить, что `verba-implement` срабатывает на бытовые формулировки.",
-        "Пригодится для `verba-ui`, когда до него дойдёт."
+        "Нужен для замера срабатывания `verba-ui` — он создан без evals."
       ],
       "cons": [
-        "Evals стоят времени и токенов — гонять при изменении описания, а не каждый раз."
+        "Evals стоят времени и токенов — гонять при изменении описания, а не каждый раз.",
+        "Его `run_loop` для замера срабатывания в CLI 2.1.173 не работает: подсовывает описание как слэш-команду, которую агенту нечем вызвать, и честно показывает ноль у всех запросов. Замер — своим скриптом из `verba-implement/evals/`."
       ],
-      "next": { "text": "Использовать для evals verba-implement", "needs": false },
-      "apply": [ { "type": "chat", "body": "/skill-creator" } ],
+      "next": {
+        "text": "Замер срабатывания — через evals/ скилла, не через run_loop",
+        "needs": false
+      },
+      "apply": [
+        {
+          "type": "chat",
+          "body": "/skill-creator"
+        }
+      ],
       "prior": "Скиллы прошлого проекта писались без evals — см. урок про непроверенное срабатывание.",
       "decision": ""
     },
@@ -346,36 +396,46 @@
       "name": "typescript-lsp",
       "kind": "plugin",
       "rec": "take",
-      "status": "off",
-      "review": "pending",
+      "status": "on",
+      "review": "accepted",
       "short": "Навигация и ошибки типов TypeScript",
-      "where": "`claude-plugins-official`, не включён. Бинарь `typescript-language-server` на машине не установлен",
+      "where": "`claude-plugins-official`, включён в `.claude/settings.json` проекта 23 сентября 2026. Бинарь `typescript-language-server` 6.0.0 поставлен глобально",
       "what": "Языковой сервер TypeScript: переход к определению, поиск ссылок, ошибки типов прямо во время правок.",
       "pros": [
         "В монолите Next.js типы общие для экранов, сервисов и Prisma — изменение модели сразу видно по всей цепочке, без полного `tsc`.",
         "Дешевле и точнее, чем искать ссылки grep'ом по растущей кодовой базе."
       ],
       "cons": [
-        "Нужен глобальный бинарь.",
-        "Пока нет `package.json` и кода, пользы ноль."
+        "Нужен глобальный бинарь — поставлен через `npm install -g`.",
+        "Плагин подхватывается при следующем запуске Claude Code, не на лету."
       ],
-      "next": { "text": "Подключить вместе с package.json", "needs": true },
+      "next": {
+        "text": "Работает — проверено после перезапуска",
+        "needs": false
+      },
       "apply": [
-        { "type": "bash", "body": "npm install -g typescript-language-server typescript" },
-        { "type": "json", "label": ".claude/settings.json", "body": "{\n  \"enabledPlugins\": {\n    \"typescript-lsp@claude-plugins-official\": true\n  }\n}" }
+        {
+          "type": "bash",
+          "body": "npm install -g typescript-language-server typescript"
+        },
+        {
+          "type": "json",
+          "label": ".claude/settings.json",
+          "body": "{\n  \"enabledPlugins\": {\n    \"typescript-lsp@claude-plugins-official\": true\n  }\n}"
+        }
       ],
       "prior": "В прошлом проекте не было.",
-      "decision": ""
+      "decision": "23.09.2026: включён перед срезом 1 — код уже есть, срез трогает Prisma-модель, сервисы и серверные компоненты."
     },
     {
       "id": "context7",
       "name": "context7",
       "kind": "external",
       "rec": "take",
-      "status": "off",
-      "review": "pending",
+      "status": "on",
+      "review": "accepted",
       "short": "Актуальная документация библиотек",
-      "where": "`claude-plugins-official` → `external_plugins/context7` (Upstash), MCP через `npx @upstash/context7-mcp`",
+      "where": "`claude-plugins-official` → `external_plugins/context7` (Upstash), включён в `.claude/settings.json` проекта 23 сентября 2026; MCP через `npx @upstash/context7-mcp`",
       "what": "Подтягивает в контекст документацию и примеры нужной версии библиотеки.",
       "pros": [
         "Next.js App Router, Prisma, BullMQ и `playwright-bdd` часто меняют API, а знания модели отстают.",
@@ -385,12 +445,19 @@
         "Внешний сервис: в Upstash уходят названия библиотек и вопросы (не код).",
         "Ещё один MCP в контексте каждой сессии."
       ],
-      "next": { "text": "Подключить", "needs": true },
+      "next": {
+        "text": "Работает — проверено после перезапуска",
+        "needs": false
+      },
       "apply": [
-        { "type": "json", "label": ".claude/settings.json", "body": "{\n  \"enabledPlugins\": {\n    \"context7@claude-plugins-official\": true\n  }\n}" }
+        {
+          "type": "json",
+          "label": ".claude/settings.json",
+          "body": "{\n  \"enabledPlugins\": {\n    \"context7@claude-plugins-official\": true\n  }\n}"
+        }
       ],
       "prior": "",
-      "decision": ""
+      "decision": "23.09.2026: включён перед срезом 1 — обвязка на `playwright-bdd`, Next.js 16.3, Prisma 7.10 с `adapter-pg`: всё новее знаний модели."
     },
     {
       "id": "playwright",
@@ -398,52 +465,76 @@
       "kind": "external",
       "rec": "take",
       "status": "on",
-      "review": "pending",
+      "review": "accepted",
       "short": "Агент работает в браузере",
-      "where": "MCP подключён на уровне пользователя (`~/.claude.json`), в проекте не прописан",
+      "where": "MCP прописан в `.mcp.json` проекта 23 сентября 2026; прежнее подключение на уровне пользователя (`~/.claude.json`) пока осталось",
       "what": "Агент управляет браузером: открывает страницы, кликает, заполняет формы, снимает скриншоты.",
       "pros": [
-        "Сверка сверстанных экранов с `docs/design/screens/` в двух темах и двух ширинах (390 и 1280 px).",
+        "Сверка сверстанных экранов с `docs/design/screens/` в двух ширинах (390 и 1280 px) — шаг каждого вертикального среза с экраном (`verba-ui`, «Сверка с макетом»).",
         "Отладка сценариев `@e2e`: посмотреть глазами, что видит шаг."
       ],
       "cons": [
         "Сами `@e2e` гоняет раннер `playwright-bdd` (ADR 0003) — MCP для них не нужен, только для ручной проверки.",
         "Глобальное подключение не переезжает на другую машину вместе с репозиторием."
       ],
-      "next": { "text": "По желанию — перенести в .mcp.json проекта", "needs": false },
+      "next": {
+        "text": "Решить, убирать ли дубль на уровне пользователя",
+        "needs": true
+      },
       "apply": [
-        { "type": "json", "label": ".mcp.json", "body": "{\n  \"mcpServers\": {\n    \"playwright\": {\n      \"command\": \"npx\",\n      \"args\": [\"@playwright/mcp@latest\"]\n    }\n  }\n}" },
-        { "type": "text", "body": "Затем убрать глобальное подключение, чтобы не было двух одинаковых серверов:" },
-        { "type": "bash", "body": "claude mcp remove playwright -s user" }
+        {
+          "type": "json",
+          "label": ".mcp.json — уже в проекте",
+          "body": "{\n  \"mcpServers\": {\n    \"playwright\": {\n      \"command\": \"npx\",\n      \"args\": [\"@playwright/mcp@latest\"]\n    }\n  }\n}"
+        },
+        {
+          "type": "text",
+          "body": "Если глобальная запись больше нигде не нужна:"
+        },
+        {
+          "type": "bash",
+          "body": "claude mcp remove playwright -s user"
+        }
       ],
       "prior": "Проектных MCP в прошлом проекте почти не было; e2e жили в отдельном репозитории.",
-      "decision": ""
+      "decision": "23.09.2026: перенесён в проект. Глобальную запись не трогали: она общая для всех проектов, удаление — отдельное решение."
     },
     {
       "id": "verba-ui",
       "name": "verba-ui",
       "kind": "project",
-      "rec": "later",
-      "status": "missing",
-      "review": "pending",
+      "rec": "take",
+      "status": "on",
+      "review": "accepted",
       "short": "Вёрстка экрана по макету и токенам",
-      "where": "Не создан; будет `.claude/skills/verba-ui/`",
-      "what": "Вёрстка экрана: макет из `docs/design/screens/` → переменные и классы `tokens.css` → проверка через Playwright в светлой и тёмной теме, на 390 и 1280 px.",
+      "where": "`.claude/skills/verba-ui/SKILL.md` — в git",
+      "what": "Вёрстка экрана: макет из `docs/design/screens/` → переменные и классы `tokens.css` → проверка через Playwright на 390 и 1280 px. Тёмной темы в первой версии нет.",
       "pros": [
         "Правило «только токены, хексы из макетов не копировать» сейчас держится одной строкой в `AGENTS.md`. При вёрстке агент будет тянуться к значениям из макетов.",
-        "Даёт процедуру сверки с макетом, а не только запрет."
+        "Процедура сверки с макетом переехала сюда из `verba-implement`; там осталась ссылка.",
+        "Итоги вёрстки среза 1: три из шести исправлений повторятся на каждом экране — размеры макета, которых нет в токенах (80, 52, 20, 40 px), и `min-height` при `box-sizing: border-box`. Нужна таблица «размер из макета → выражение из токенов»."
       ],
       "cons": [
-        "Кода интерфейса ещё нет — скилл, написанный заранее, будет гадать о проблемах, которых может не быть."
+        "Построен на двух экранах среза 1; таблица соответствий размеров будет расти с каждым срезом.",
+        "Срабатывание не замерено."
       ],
-      "when": "При вёрстке первого экрана — по первым реальным ошибкам агента",
-      "next": { "text": "Создать при вёрстке первого экрана", "needs": false },
+      "when": "Создан 23.09.2026 по «Итогам вёрстки» среза 1 (`docs/plan/01-auth.md`)",
+      "next": {
+        "text": "Дополнять таблицу размеров и «Где ошибались раньше» по итогам вёрстки каждого среза",
+        "needs": false
+      },
       "apply": [
-        { "type": "chat", "body": "/skill-creator" },
-        { "type": "text", "body": "Ссылаться на `tokens.css` и `docs/design/README.md`, а не перечислять значения; пути только относительные." }
+        {
+          "type": "chat",
+          "body": "/skill-creator"
+        },
+        {
+          "type": "text",
+          "body": "Ссылаться на `tokens.css` и `docs/design/README.md`, а не перечислять значения; пути только относительные."
+        }
       ],
       "prior": "Аналог `frontend-ui-guardrails`, но без палитры в тексте скилла и без абсолютного пути к проекту.",
-      "decision": ""
+      "decision": "23.09.2026: создан. Содержит таблицу «размер из макета → выражение из токенов», ошибки вёрстки среза 1, правила форм и процедуру сверки с макетом (перенесена из `verba-implement`)."
     },
     {
       "id": "run",
@@ -462,10 +553,19 @@
         "Запускать пока нечего."
       ],
       "when": "Когда появится `docker-compose.yml`",
-      "next": { "text": "Записать рецепт запуска, когда появится compose", "needs": false },
+      "next": {
+        "text": "Записать рецепт запуска, когда появится compose",
+        "needs": false
+      },
       "apply": [
-        { "type": "text", "body": "Рецепт — проектный скилл или раздел в `AGENTS.md`: как поднять `app`, `worker`, `postgres`, `redis`, где смотреть логи." },
-        { "type": "chat", "body": "/run" }
+        {
+          "type": "text",
+          "body": "Рецепт — проектный скилл или раздел в `AGENTS.md`: как поднять `app`, `worker`, `postgres`, `redis`, где смотреть логи."
+        },
+        {
+          "type": "chat",
+          "body": "/run"
+        }
       ],
       "prior": "",
       "decision": ""
@@ -481,14 +581,23 @@
       "where": "Встроен в Claude Code",
       "what": "Смотрит историю сессий и добавляет в `.claude/settings.json` проекта разрешения для частых безопасных команд.",
       "pros": [
-        "`test:spec` агент гоняет после каждой правки (ADR 0003) — без разрешения это подтверждение на каждый прогон."
+        "`test:spec` агент гоняет после каждой правки (ADR 0003) — без разрешения это подтверждение на каждый прогон.",
+        "23.09.2026 базовый allowlist (`pnpm typecheck`, `lint`, `test:spec`, `test:e2e`, `db:migrate`, Prisma) добавлен в `.claude/settings.json` руками — сканер дособерёт остальное по следам среза."
       ],
       "cons": [
-        "Истории команд в verba пока почти нет — сканировать нечего."
+        "Истории команд в verba почти нет — сканировать пока нечего."
       ],
       "when": "Когда устоятся `test:spec`, `test:e2e` и команды Prisma",
-      "next": { "text": "Запустить после первых недель работы с кодом", "needs": false },
-      "apply": [ { "type": "chat", "body": "/fewer-permission-prompts" } ],
+      "next": {
+        "text": "Запустить после среза 1",
+        "needs": false
+      },
+      "apply": [
+        {
+          "type": "chat",
+          "body": "/fewer-permission-prompts"
+        }
+      ],
       "prior": "В прошлом проекте разрешения копились руками в `settings.local.json`, и туда попали доступ к проду и прод-скрипты. Лучше генерировать список и держать в общем `settings.json` только безопасное.",
       "decision": ""
     },
@@ -510,9 +619,15 @@
         "Нужен `--max-iterations`, иначе на трудном сценарии не остановится."
       ],
       "when": "Когда заработает `test:spec` и появятся первые зелёные сценарии",
-      "next": { "text": "Ждёт раннера и первых шагов", "needs": false },
+      "next": {
+        "text": "Ждёт раннера и первых шагов",
+        "needs": false
+      },
       "apply": [
-        { "type": "chat", "body": "/ralph-loop \"Сделай зелёными все сценарии @BR-19 по verba-implement. Выведи DONE, только когда test:spec проходит целиком\" --max-iterations 15 --completion-promise DONE" }
+        {
+          "type": "chat",
+          "body": "/ralph-loop \"Сделай зелёными все сценарии @BR-19 по verba-implement. Выведи DONE, только когда test:spec проходит целиком\" --max-iterations 15 --completion-promise DONE"
+        }
       ],
       "prior": "Включён глобально с февраля 2026.",
       "decision": ""
@@ -521,26 +636,37 @@
       "id": "implementation-recipes",
       "name": "implementation-recipes",
       "kind": "own",
-      "rec": "later",
-      "status": "on",
-      "review": "pending",
+      "rec": "skip",
+      "status": "off",
+      "review": "rejected",
       "short": "Каталог готовых рецептов реализации",
-      "where": "Свой плагин, локальный маркетплейс `~/projects/implementation-recipes`, включён на уровне пользователя",
+      "where": "Свой плагин, локальный маркетплейс `~/projects/implementation-recipes`. Отключён 23 сентября 2026 в `~/.claude/settings.json`; каталог на диске остался",
       "what": "Каталог утверждённых рецептов реализации и скилл, который извлекает новые рецепты из проекта-донора.",
       "pros": [
         "В каталоге есть `auth`: пользователи в Prisma, пароли Argon2id, JWT — ближе всего к входу verba."
       ],
       "cons": [
-        "Рецепты написаны под NestJS 11 + GraphQL, а verba — монолит Next.js без GraphQL (ADR 0002). Переносится модель данных и хеширование, модули и резолверы NestJS — нет.",
+        "Рецепты устарели: сняты со стека прошлого проекта и с тех пор не обновлялись.",
+        "Написаны под NestJS 11 + GraphQL, а verba — монолит Next.js без GraphQL (ADR 0002). Переносится модель данных и хеширование, модули и резолверы NestJS — нет.",
         "`signup`, `sms`, `phone-normalization` не нужны: пользователей заводят руками."
       ],
-      "when": "При планировании входа (auth)",
-      "next": { "text": "Свериться с рецептом auth при планировании входа", "needs": false },
+      "next": {
+        "text": "Отключён",
+        "needs": false
+      },
       "apply": [
-        { "type": "text", "body": "Попросить в чате: «подбери рецепт для входа в verba» — скилл `implementation-recipes` найдёт подходящий в каталоге." }
+        {
+          "type": "json",
+          "label": "~/.claude/settings.json — как вернуть",
+          "body": "{\n  \"enabledPlugins\": {\n    \"implementation-recipes@implementation-recipes\": true\n  }\n}"
+        },
+        {
+          "type": "text",
+          "body": "Маркетплейс остался в `extraKnownMarketplaces`, поэтому включение — одна строка. Перед возвратом обновить рецепты под стек verba."
+        }
       ],
       "prior": "Стек рецептов совпадает со стеком прошлого проекта.",
-      "decision": ""
+      "decision": "23.09.2026: отключён — рецепты устарели. Каталог на диске сохранён, включается обратно одной строкой в `~/.claude/settings.json`."
     },
     {
       "id": "incident-investigator",
@@ -559,7 +685,10 @@
         "До прода расследовать нечего."
       ],
       "when": "После первого деплоя на VPS",
-      "next": { "text": "Ничего не делать до деплоя", "needs": false },
+      "next": {
+        "text": "Ничего не делать до деплоя",
+        "needs": false
+      },
       "apply": [],
       "prior": "В прошлом проекте он же лежит проектным агентом `.claude/agents/incident-investigator.md` с собственной памятью — две копии одного и того же.",
       "decision": ""
@@ -583,9 +712,16 @@
         "Частично дублирует `security-review`."
       ],
       "when": "По вкусу — когда пойдёт код входа и загрузки",
-      "next": { "text": "Решить, когда пойдёт код входа", "needs": false },
+      "next": {
+        "text": "Решить, когда пойдёт код входа",
+        "needs": false
+      },
       "apply": [
-        { "type": "json", "label": ".claude/settings.json", "body": "{\n  \"enabledPlugins\": {\n    \"security-guidance@claude-plugins-official\": true\n  }\n}" }
+        {
+          "type": "json",
+          "label": ".claude/settings.json",
+          "body": "{\n  \"enabledPlugins\": {\n    \"security-guidance@claude-plugins-official\": true\n  }\n}"
+        }
       ],
       "prior": "",
       "decision": ""
@@ -595,10 +731,10 @@
       "name": "frontend-design",
       "kind": "user",
       "rec": "skip",
-      "status": "on",
-      "review": "pending",
+      "status": "off",
+      "review": "accepted",
       "short": "Самобытный дизайн интерфейсов",
-      "where": "Глобальный скилл `~/.claude/skills/frontend-design/` — срабатывает во всех проектах, включая verba",
+      "where": "Перенесён 23 сентября 2026 в `~/.claude/skills-disabled/frontend-design/` — в глобальных скиллах его больше нет",
       "what": "Делает «самобытные», нешаблонные интерфейсы: сам выбирает шрифты, палитру и композицию.",
       "pros": [
         "Хорош там, где дизайн-системы нет."
@@ -607,14 +743,27 @@
         "В verba дизайн задан макетами и `tokens.css`, а правило из `AGENTS.md` запрещает свои значения.",
         "Описание срабатывает на любое «сверстай экран» — скилл уведёт от макета к собственной эстетике."
       ],
-      "next": { "text": "Убрать из глобальных скиллов", "needs": true },
+      "next": {
+        "text": "Убран",
+        "needs": false
+      },
       "apply": [
-        { "type": "bash", "body": "mkdir -p ~/.claude/skills-disabled && mv ~/.claude/skills/frontend-design ~/.claude/skills-disabled/" },
-        { "type": "text", "body": "В проектах, где он нужен, включать плагином:" },
-        { "type": "json", "label": ".claude/settings.json того проекта", "body": "{\n  \"enabledPlugins\": {\n    \"frontend-design@claude-plugins-official\": true\n  }\n}" }
+        {
+          "type": "bash",
+          "body": "mkdir -p ~/.claude/skills-disabled && mv ~/.claude/skills/frontend-design ~/.claude/skills-disabled/"
+        },
+        {
+          "type": "text",
+          "body": "В проектах, где он нужен, включать плагином:"
+        },
+        {
+          "type": "json",
+          "label": ".claude/settings.json того проекта",
+          "body": "{\n  \"enabledPlugins\": {\n    \"frontend-design@claude-plugins-official\": true\n  }\n}"
+        }
       ],
       "prior": "В прошлом проекте тоже лежал глобально, при своём визуальном языке (серая шкала + `sky`) — тот же конфликт.",
-      "decision": ""
+      "decision": "23.09.2026: убран перед срезом 1, где есть вёрстка входа и списка по макетам. Возврат — обратным `mv`; в чужих проектах включать плагином."
     },
     {
       "id": "feature-dev",
@@ -632,7 +781,10 @@
       "cons": [
         "Дублирует `verba-implement` и задаёт свой порядок работы, в котором сценарий не идёт первым."
       ],
-      "next": { "text": "Не подключать", "needs": false },
+      "next": {
+        "text": "Не подключать",
+        "needs": false
+      },
       "apply": [],
       "prior": "",
       "decision": ""
@@ -653,7 +805,10 @@
       "cons": [
         "Дублирует встроенный `code-review`."
       ],
-      "next": { "text": "Не подключать", "needs": false },
+      "next": {
+        "text": "Не подключать",
+        "needs": false
+      },
       "apply": [],
       "prior": "",
       "decision": ""
@@ -674,7 +829,10 @@
       "cons": [
         "`AGENTS.md` уже написан руками и точнее; `CLAUDE.md` — ссылка на него. `init` добавит шум."
       ],
-      "next": { "text": "Не запускать", "needs": false },
+      "next": {
+        "text": "Не запускать",
+        "needs": false
+      },
       "apply": [],
       "prior": "",
       "decision": ""
@@ -684,6 +842,42 @@
     {
       "date": "2026-09-22",
       "text": "Реестр создан по итогам разбора скиллов Anthropic и опыта прошлого проекта. 19 позиций, все не разобраны. Ждут действия: verba-implement (git и evals), typescript-lsp, context7, frontend-design."
+    },
+    {
+      "date": "2026-09-23",
+      "text": "verba-implement: добавлен раздел «Сначала план в файле» — вертикальный срез или крупная фича начинается с `docs/plan/NN-название.md`, без установки пакетов и кода до реакции пользователя. Состав тестовой обвязки по срезам теперь берётся из `docs/plan/` (стаб STT и синхронная очередь — во втором срезе). В описание добавлено «спланировать срез». Скилл уже в git — пункт про коммит снят."
+    },
+    {
+      "date": "2026-09-23",
+      "text": "verba-implement: добавлен подраздел «Проверка плана» — четыре пункта самопроверки (фразы сценариев ↔ шаги, непроверенные предположения, отступления от документов, список решений) и условие для независимого ревью агентом `Plan`: изменение модели данных, новый ADR, внешняя граница."
+    },
+    {
+      "date": "2026-09-23",
+      "text": "implementation-recipes отключён на уровне пользователя: рецепты устарели. Позиция переведена в «Не брать», разбор — отклонён. Каталог и маркетплейс на диске сохранены."
+    },
+    {
+      "date": "2026-09-23",
+      "text": "verba-implement: в «Проверку плана» (пункт 1) добавлены два класса ошибок, найденные ревью плана вертикального среза 1: одна фраза с разными смыслами в `Дано` и `Тогда` и `Тогда` без записанного ожидания (что проверяет, чего ждёт). Из скилла убрано слово «срез» без «вертикальный»."
+    },
+    {
+      "date": "2026-09-23",
+      "text": "Перед срезом 1 включены `typescript-lsp` и `context7` в `.claude/settings.json` проекта, поставлен `typescript-language-server` 6.0.0, `playwright` MCP прописан в `.mcp.json`, `frontend-design` убран из глобальных скиллов. В `settings.json` добавлен allowlist на частые команды pnpm и Prisma. Evals на триггеры `verba-implement` подготовлены, но не прогнаны: `claude -p` требует входа в CLI."
+    },
+    {
+      "date": "2026-09-23",
+      "text": "verba-implement: добавлен раздел «Экран сверяется с макетом» — шаг сверки в плане вертикального среза (390 и 1280 px, Playwright MCP, расхождение исправить или записать отступлением) и «Итоги вёрстки» как вход для решения о `verba-ui`. В «Проверку плана» (пункт 3): состояние экрана без макета — тоже отступление. verba-ui: решение о создании — по «Итогам вёрстки» вертикального среза 1; тёмной темы в первой версии нет."
+    },
+    {
+      "date": "2026-09-23",
+      "text": "Замер срабатывания `verba-implement`: 20 запросов × 3 прогона в копии репозитория, plan mode. До 4 ходов — 9 из 10 задач с кодом и 0 из 10 соседних задач без кода; по одному ходу — 6 из 10. Стабильно мимо — отладка падающего `test:spec`. Набор и скрипт сохранены в `.claude/skills/verba-implement/evals/`. `run_loop` из skill-creator для этого не годится: в CLI 2.1.173 даёт ноль у всех запросов. `typescript-lsp` и `context7` после перезапуска работают."
+    },
+    {
+      "date": "2026-09-23",
+      "text": "Вертикальный срез 1 реализован, экраны сверены с макетами через Playwright MCP. verba-ui: рекомендация later → take, ждёт решения — по «Итогам вёрстки» (`docs/plan/01-auth.md`) три исправления из шести повторятся на каждом экране: размеры макета вне токенов и `min-height` при `border-box`."
+    },
+    {
+      "date": "2026-09-23",
+      "text": "Создан проектный скилл `verba-ui` (`.claude/skills/verba-ui/`): таблица соответствий размеров макета и токенов, ошибки вёрстки среза 1, правила форм, процедура сверки с макетом. Раздел «Экран сверяется с макетом» в `verba-implement` сокращён до ссылки на `verba-ui`."
     }
   ]
 }
@@ -729,7 +923,7 @@
         <thead><tr><th>Уровень</th><th>Где лежит</th><th>Что туда класть</th></tr></thead>
         <tbody>
           <tr><td>Факты о проекте</td><td><code>AGENTS.md</code>, <code>docs/</code></td><td>Правила, структура, решения. Агент читает их всегда — скилл не нужен.</td></tr>
-          <tr><td>Процесс проекта</td><td><code>.claude/skills/</code> в git</td><td>Как здесь делают работу. Сейчас это <code>verba-implement</code>.</td></tr>
+          <tr><td>Процесс проекта</td><td><code>.claude/skills/</code> в git</td><td>Как здесь делают работу. Сейчас это <code>verba-implement</code> и <code>verba-ui</code>.</td></tr>
           <tr><td>Инструменты Anthropic</td><td>Плагины в <code>.claude/settings.json</code> проекта</td><td>Общее: ревью, LSP, документация библиотек, браузер.</td></tr>
         </tbody>
       </table>
@@ -745,24 +939,25 @@
   </section>
 
   <section class="ctx" id="environment">
-    <h2>Окружение на 22 сентября 2026</h2>
+    <h2>Окружение на 23 сентября 2026</h2>
     <p class="sub">Снимок того, что реально установлено. Если что-то поменялось — обновить этот раздел вместе со статусами.</p>
 
     <div class="inv">
       <div class="card">
         <h4>Проект verba</h4>
         <ul>
-          <li><code>.claude/skills/verba-implement/SKILL.md</code> — единственный проектный скилл.</li>
-          <li>Нет <code>.claude/settings.json</code> и <code>.mcp.json</code> — ни плагинов, ни MCP на уровне проекта.</li>
-          <li>В репозитории нет ни одного коммита; <code>.claude/</code>, <code>docs/</code>, <code>AGENTS.md</code> не отслеживаются.</li>
-          <li>Кода ещё нет: стадия исследования и проектирования.</li>
+          <li>Проектные скиллы в git: <code>.claude/skills/verba-implement/</code> и <code>.claude/skills/verba-ui/</code>.</li>
+          <li><code>.claude/settings.json</code>: плагины <code>typescript-lsp</code> и <code>context7</code> плюс allowlist на частые команды pnpm и Prisma.</li>
+          <li><code>.mcp.json</code>: <code>playwright</code>.</li>
+          <li>Код есть: Next.js 16.3.6, React 19.2, Prisma 7.10 с <code>adapter-pg</code>, pnpm, <code>compose.yaml</code>. Первый коммит сделан.</li>
+          <li>Вертикальный срез 1 (вход и тестовая обвязка) реализован: <code>playwright-bdd</code>, <code>test:spec</code> и <code>test:e2e</code> работают.</li>
         </ul>
       </div>
       <div class="card">
         <h4>Уровень пользователя, <code>~/.claude</code></h4>
         <ul>
-          <li>Скиллы: <code>frontend-design</code>, <code>incident-investigator</code>, <code>ru-proxy-browser</code>, <code>youtube-summary</code>.</li>
-          <li>Плагины: <code>ralph-loop@claude-plugins-official</code>, <code>implementation-recipes@implementation-recipes</code> (локальный маркетплейс <code>~/projects/implementation-recipes</code>).</li>
+          <li>Скиллы: <code>incident-investigator</code>, <code>ru-proxy-browser</code>, <code>youtube-summary</code>. В <code>skills-disabled/</code> отложены <code>frontend-design</code> и <code>backend-software-engineer</code>.</li>
+          <li>Плагины: <code>ralph-loop@claude-plugins-official</code>. <code>implementation-recipes@implementation-recipes</code> отключён 23 сентября 2026 — запись в <code>enabledPlugins</code> стоит в <code>false</code>, маркетплейс <code>~/projects/implementation-recipes</code> остался известным.</li>
           <li>MCP: <code>playwright</code> в <code>~/.claude.json</code>.</li>
           <li>Хук на Bash: <code>rtk-rewrite.sh</code>.</li>
         </ul>
@@ -778,9 +973,9 @@
       <div class="card">
         <h4>Инструменты на машине</h4>
         <ul>
-          <li><code>node</code> — есть (<code>~/.local/bin/node</code>).</li>
-          <li><code>typescript-language-server</code>, <code>tsc</code> — не установлены; нужны для <code>typescript-lsp</code>.</li>
-          <li><code>python3</code> — нужен для <code>security-guidance</code>.</li>
+          <li><code>node</code>, <code>pnpm</code>, <code>python3</code> — есть.</li>
+          <li><code>typescript-language-server</code> 6.0.0 — поставлен глобально 23 сентября 2026.</li>
+          <li><code>claude</code> CLI 2.1.173 залогинен 23 сентября 2026. <code>claude -p</code> работает из обычного терминала; из Bash-инструмента сессии Claude Desktop отвечает «Not logged in».</li>
         </ul>
       </div>
     </div>
@@ -813,7 +1008,7 @@
           <tr><td>Список соглашений NestJS, выведенных из кода</td><td>Процесс, привязанный к требованиям</td><td>ADR 0002 прямо говорит, что NestJS-скилл здесь неприменим. Не переносить.</td></tr>
           <tr><td>«Не добавлять тесты, если не просили»</td><td>Сценарий и есть тест, работа начинается с него</td><td>Противоположные философии, смешивать нельзя.</td></tr>
           <tr><td>Отдельный реестр фикстур</td><td>Шаги <code>Дано</code> пишут прямо в базу</td><td>Скилл под фикстуры не нужен.</td></tr>
-          <tr><td>Палитра Tailwind прямо в тексте скилла</td><td>Токены в <code>docs/design/</code>, правило в <code>AGENTS.md</code></td><td>Будущий <code>verba-ui</code> ссылается на токены, а не перечисляет их.</td></tr>
+          <tr><td>Палитра Tailwind прямо в тексте скилла</td><td>Токены в <code>docs/design/</code>, правило в <code>AGENTS.md</code></td><td><code>verba-ui</code> ссылается на токены, а не перечисляет палитру; в нём только таблица размеров, которых в токенах нет.</td></tr>
         </tbody>
       </table>
     </div>
@@ -836,7 +1031,7 @@
       <li>Обсудить позицию в чате: рекомендация, «за» и «против», подходит ли сейчас.</li>
       <li>В JSON-блоке <code>registry-data</code> в начале этого файла поменять <code>review</code> на <code>accepted</code> или <code>rejected</code> и записать одну фразу в <code>decision</code>.</li>
       <li>Если принята — выполнить шаги из «Как применить», затем обновить <code>status</code> и <code>next</code>.</li>
-      <li>Добавить запись в <code>journal</code> (новые сверху) и поменять <code>updated</code>.</li>
+      <li>Добавить запись в <code>journal</code> (в конец, по дате) и поменять <code>updated</code>.</li>
       <li>Если поменялось окружение — обновить раздел «Окружение». Переопубликовать страницу.</li>
     </ol>
 
@@ -864,7 +1059,7 @@
 
   <section class="ctx" id="journal">
     <h2>Журнал</h2>
-    <p class="sub">Что и когда поменялось в реестре. Новые записи сверху.</p>
+    <p class="sub">Что и когда поменялось в реестре, в порядке дат.</p>
     <div class="journal" id="journal-list"></div>
   </section>
 
