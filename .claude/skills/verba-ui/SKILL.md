@@ -135,6 +135,14 @@ description: Верстать экраны verba по макетам и токе
    (`file://…/docs/design/screens/*.html`). Состояние «идёт» ловится
    задержкой ответа через `page.route`; таймеры в коде MCP — через
    `page.waitForTimeout`, `setTimeout` там нет.
+   Если MCP отвечает «Browser is already in use» (браузер держит другая
+   сессия), снимать своим скриптом на Playwright из проекта: `.mjs` в
+   scratchpad с `import { chromium } from
+   "<корень>/node_modules/@playwright/test/index.mjs"`, запуск `node`.
+   Сессия — cookie `verba_session` с токеном из `createSession`
+   (`src/server/auth/sessions.ts`), как в e2e-шаге «я вошёл как».
+   Выбор файла — `page.waitForEvent("filechooser")`, «идёт» — `page.route`
+   с обработчиком, который не отвечает.
 2. Склеить макет и снимок рядом (PIL) и смотреть парами: одна картинка
    на состояние дешевле и нагляднее двух.
 3. Сравнивать по порядку: тексты → геометрия (ширины колонок, высоты
