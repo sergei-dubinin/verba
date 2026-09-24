@@ -1,0 +1,154 @@
+/* Экран входа: docs/design/screens/login*.html. Значения — только токены. */
+
+.page {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg) var(--space-md);
+  background: var(--color-canvas-parchment);
+}
+
+.column {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.title {
+  margin: 0;
+  text-align: center;
+  color: var(--color-ink);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+/* Поля — одна сетка. Разделитель доходит до правого края карточки, поэтому
+   отступ справа — у поля, а не у карточки. */
+.card {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: center;
+  column-gap: var(--space-sm);
+  padding-inline-start: var(--space-md);
+  background: var(--color-canvas);
+  border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+}
+
+.cardError {
+  border-color: var(--color-danger);
+}
+
+/* Колонка подписей 80 px, как в макете: токена ширины нет, собрана из отступов. */
+.label {
+  min-width: calc(var(--space-xxl) + var(--space-xl));
+  color: var(--color-ink);
+}
+
+.input {
+  min-width: 0;
+  min-height: var(--size-touch);
+  margin-block: var(--space-xxs);
+  padding: 0 var(--space-md) 0 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-ink);
+  outline-offset: var(--space-xxs);
+}
+
+.input::placeholder {
+  color: var(--color-ink-muted-48);
+}
+
+.label:has(+ .input:disabled),
+.input:disabled {
+  color: var(--color-ink-muted-48);
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--color-primary-focus);
+}
+
+.divider {
+  grid-column: 1 / -1;
+  height: 1px;
+  background: var(--color-hairline);
+}
+
+.error {
+  margin: 0 0 0 var(--space-md);
+  color: var(--color-danger);
+}
+
+.submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  /* Высота 52 px, как у строки поля: зона касания плюс отступы. */
+  min-height: calc(var(--size-touch) + 2 * var(--space-xxs));
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  cursor: pointer;
+}
+
+.submit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.submit:focus-visible {
+  outline: 2px solid var(--color-primary-focus);
+  outline-offset: 2px;
+}
+
+.spinner {
+  width: var(--space-md);
+  height: var(--space-md);
+  border-radius: var(--radius-full);
+  border: 2px solid color-mix(in srgb, var(--color-on-primary) 40%, transparent);
+  border-top-color: var(--color-on-primary);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.hint {
+  margin: 0;
+  text-align: center;
+  color: var(--color-ink-muted-48);
+}
+
+/* Десктоп (--bp-tablet-portrait): колонка фиксированной ширины чуть выше
+   центра и крупный заголовок. В @media переменные не работают, а класс
+   .t-hero-display не подключить — его значения повторены здесь. */
+@media (min-width: 734px) {
+  .column {
+    width: 380px;
+    margin-top: calc(-1 * var(--space-xxl));
+  }
+
+  .title {
+    font-size: 56px;
+    line-height: 1.07;
+    letter-spacing: -0.28px;
+  }
+}

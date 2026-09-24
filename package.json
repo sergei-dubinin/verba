@@ -10,10 +10,17 @@
     "typecheck": "next typegen && tsc --noEmit",
     "postinstall": "prisma generate",
     "db:up": "docker compose up -d",
-    "db:migrate": "prisma migrate dev",
-    "db:studio": "prisma studio"
+    "db:migrate": "prisma migrate dev && prisma generate",
+    "db:studio": "prisma studio",
+    "test": "bddgen && VERBA_E2E=1 playwright test",
+    "test:spec": "bddgen && playwright test --project spec",
+    "test:missing": "BDD_MISSING=fail bddgen",
+    "test:e2e": "bddgen && VERBA_E2E=1 playwright test --project e2e",
+    "user:create": "tsx scripts/user.ts create",
+    "user:passwd": "tsx scripts/user.ts passwd"
   },
   "dependencies": {
+    "@node-rs/argon2": "^2.2.1",
     "@prisma/adapter-pg": "7.10.0",
     "@prisma/client": "7.10.0",
     "next": "16.3.6",
@@ -22,6 +29,7 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@types/node": "^22",
     "@types/pg": "^8.23.1",
     "@types/react": "^19",
@@ -29,7 +37,9 @@
     "dotenv": "^18.0.3",
     "eslint": "^9",
     "eslint-config-next": "16.3.6",
+    "playwright-bdd": "^9.2.1",
     "prisma": "7.10.0",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   },
   "packageManager": "pnpm@10.11.0",

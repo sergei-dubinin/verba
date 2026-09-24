@@ -43,3 +43,11 @@ next-env.d.ts
 
 # prisma
 /src/generated/
+
+# тесты сценариев
+/.features-gen/
+/test-results/
+/playwright-report/
+/blob-report/
+/.next-e2e/
+/.playwright-mcp/

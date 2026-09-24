@@ -1,0 +1,17 @@
+import { NextResponse, type NextRequest } from "next/server";
+import { SESSION_COOKIE } from "@/server/auth/cookie";
+
+// Быстрая проверка без базы: нет cookie сессии — на страницу входа.
+// Настоящая проверка — requireUser() на каждой странице (ADR 0004).
+export function proxy(request: NextRequest) {
+  if (!request.cookies.has(SESSION_COOKIE)) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+  return NextResponse.next();
+}
+
+export const config = {
+  // Всё, кроме страницы входа, ресурсов Next.js и иконки. Когда появится
+  // public/, его файлы добавить сюда.
+  matcher: ["/((?!login$|_next/|favicon\\.ico$).*)"],
+};

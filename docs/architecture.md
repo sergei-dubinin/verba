@@ -1,6 +1,6 @@
 # Архитектура verba
 
-- **Обновлено:** 2026-09-21
+- **Обновлено:** 2026-09-23
 - **Статус:** черновик. Стек выбран ([ADR 0002](decisions/0002-stack-and-hosting.md)),
   провайдер STT не выбран ([ADR 0001](decisions/0001-external-stt-provider.md))
 
@@ -91,17 +91,32 @@ iPhone: `.m4a` (AAC; при настройке «без потерь» — ALAC)
 |---|---|---|
 | id | uuid | |
 | login | text, unique | |
-| password_hash | text | хеш пароля (argon2 или bcrypt), не сам пароль |
+| password_hash | text | хеш пароля argon2id, не сам пароль |
 | name | text | |
 | created_at | timestamp | |
 
-Регистрации и админки в приложении нет. Пользователей заводят напрямую в
-БД через Prisma Studio. Вход по логину и паролю, сессия в httpOnly cookie.
+Регистрации и админки в приложении нет. Пользователя заводит и меняет ему
+пароль администратор командами `pnpm user:create <login> [--name "Имя"]` и
+`pnpm user:passwd <login>` (`scripts/user.ts`); пароль читается из stdin,
+не аргументом. Всё остальное, например переименование или удаление
+пользователя, делается в Prisma Studio.
 
-Prisma Studio не умеет хешировать пароль, поэтому для создания пользователя
-и смены пароля нужен маленький CLI-скрипт (`user:create`, `user:passwd`).
-Всё остальное, например переименование или удаление пользователя, делается в
-Studio.
+### session — сессия входа
+
+| поле | тип | описание |
+|---|---|---|
+| id | uuid | |
+| user_id | fk → user | `ON DELETE CASCADE` |
+| token_hash | text, unique | SHA-256 токена из cookie; сам токен не хранится |
+| expires_at | timestamp | 30 дней с момента входа, без продления |
+| created_at | timestamp | |
+
+Вход ([ADR 0004](decisions/0004-sessions.md)): в httpOnly cookie
+`verba_session` — случайный токен, в базе — его хеш. `user:passwd` удаляет
+все сессии пользователя. Проверка — в два слоя: `src/proxy.ts` без базы
+отправляет запросы без cookie на `/login`, а `requireUser()`
+(`src/app/_lib/session.ts`) проверяет сессию в базе на каждой защищённой
+странице и в каждом действии. Выхода из системы нет.
 
 ### folder — папка
 
