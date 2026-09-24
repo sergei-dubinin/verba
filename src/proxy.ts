@@ -12,6 +12,8 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   // Всё, кроме страницы входа, ресурсов Next.js и иконки. Когда появится
-  // public/, его файлы добавить сюда.
-  matcher: ["/((?!login$|_next/|favicon\\.ico$).*)"],
+  // public/, его файлы добавить сюда. Загрузка (api/recordings) тоже мимо:
+  // proxy держит тело запроса в памяти и обрезает на 10 МБ, вход проверяет
+  // сам обработчик (план среза 3, решение 3).
+  matcher: ["/((?!login$|_next/|favicon\\.ico$|api/recordings$).*)"],
 };

@@ -5,11 +5,16 @@
 //   pnpm demo:seed <login>
 //
 // Повторный запуск заменяет демо-записи пользователя (provider = "demo").
-// Записи проходят тот же путь, что в продукте: строка в статусе processing,
-// затем completeProcessing. Строку пока создаёт сама команда — сервиса
-// загрузки ещё нет (вертикальный срез 3).
+// Готовые записи проходят тот же путь, что в продукте: строка в статусе
+// processing, затем completeProcessing. Строку создаёт сама команда, а не
+// сервис загрузки: демо-записям нужны дата в прошлом и длительность, которой
+// у тестового файла нет (план среза 3). Файл у каждой — настоящий,
+// steps/support/audio/meeting.m4a, чтобы «Повторить» было что отправлять.
 import "./load-env";
 import { randomUUID } from "node:crypto";
+import { copyFile, mkdir } from "node:fs/promises";
+import path from "node:path";
+import { recordingAudioPath, removeFile } from "../src/server/audio/storage";
 import { db } from "../src/server/db";
 import { completeProcessing } from "../src/server/recordings/processing";
 import type { SttUtterance } from "../src/server/stt/types";
@@ -72,6 +77,8 @@ function sampleUtterances(speakers: number): SttUtterance[] {
 
 type Demo = {
   title: string | null;
+  // По умолчанию — готова; в обработке и после сбоя — как в list.html.
+  status?: "processing" | "failed";
   // Сколько дней назад и во сколько — на часах приложения (APP_TIME_ZONE).
   daysAgo: number;
   at: [number, number];
@@ -82,7 +89,9 @@ type Demo = {
 const DEMOS: Demo[] = [
   { title: null, daysAgo: 0, at: [14, 5], minutes: 42, utterances: sampleUtterances(3) },
   { title: "Созвон с Ивановым", daysAgo: 0, at: [11, 20], minutes: 28, utterances: callUtterances() },
+  { title: null, status: "processing", daysAgo: 0, at: [9, 48], minutes: 64, utterances: [] },
   { title: null, daysAgo: 1, at: [16, 40], minutes: 72, utterances: sampleUtterances(2) },
+  { title: null, status: "failed", daysAgo: 1, at: [12, 3], minutes: 12, utterances: [] },
   { title: null, daysAgo: 2, at: [10, 15], minutes: 35, utterances: sampleUtterances(2) },
   { title: null, daysAgo: 3, at: [15, 30], minutes: 51, utterances: sampleUtterances(4) },
   { title: "Интервью с кандидатом", daysAgo: 4, at: [11, 0], minutes: 47, utterances: sampleUtterances(2) },
@@ -98,24 +107,36 @@ async function main() {
   const user = await db.user.findUnique({ where: { login }, select: { id: true } });
   if (!user) throw new Error(`Пользователя «${login}» нет: pnpm user:create ${login}`);
 
+  const old = await db.recording.findMany({ where: { ownerId: user.id, provider: "demo" }, select: { audioPath: true } });
   const { count } = await db.recording.deleteMany({ where: { ownerId: user.id, provider: "demo" } });
+  for (const r of old) await removeFile(r.audioPath);
+  const sample = path.resolve("steps/support/audio/meeting.m4a");
 
   for (const demo of DEMOS) {
     const today = zoned(new Date());
     const createdAt = fromZoned({ ...today, day: today.day - demo.daysAgo, hour: demo.at[0], minute: demo.at[1] });
     const id = randomUUID();
+    const audioPath = recordingAudioPath(user.id, id);
+    await mkdir(path.dirname(audioPath), { recursive: true });
+    await copyFile(sample, audioPath);
+    const failed = demo.status === "failed";
     await db.recording.create({
       data: {
         id,
         ownerId: user.id,
         title: demo.title,
-        audioPath: `/nonexistent/demo/${id}.m4a`,
-        status: "processing",
+        audioPath,
+        status: failed ? "failed" : "processing",
+        error: failed ? "demo: provider error" : null,
+        durationMs: demo.status ? demo.minutes * MINUTE : null,
         provider: "demo",
+        providerJobId: `demo-${id}`,
         createdAt,
       },
     });
-    await completeProcessing(id, { durationMs: demo.minutes * MINUTE, utterances: demo.utterances });
+    if (!demo.status) {
+      await completeProcessing(id, { durationMs: demo.minutes * MINUTE, utterances: demo.utterances });
+    }
   }
   console.log(`Удалено старых демо-записей: ${count}, создано: ${DEMOS.length}`);
 }

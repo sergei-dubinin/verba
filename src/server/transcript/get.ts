@@ -1,7 +1,8 @@
-import type { RecordingStatus } from "../../generated/prisma/client";
 import { db } from "../db";
+import { isUuid } from "../ids";
 import { RecordingNotFoundError } from "../recordings/errors";
 import { displayTitle, formatOffset, transcriptMeta } from "../recordings/format";
+import { recordingState, type RecordingStateView } from "../recordings/state";
 
 export type TranscriptUtterance = {
   startMs: number;
@@ -16,15 +17,12 @@ export type TranscriptGroup = {
   utterances: TranscriptUtterance[];
 };
 
-export type TranscriptView = {
+export type TranscriptView = RecordingStateView & {
   id: string;
   title: string;
   meta: string;
-  status: RecordingStatus;
   groups: TranscriptGroup[];
 };
-
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 // В MVP спикер всегда «Спикер {ord}», метка провайдера не показывается (BR-11).
 const speakerName = (ord: number) => `Спикер ${ord}`;
@@ -36,7 +34,7 @@ export async function getTranscript(
   id: string,
   now: Date = new Date(),
 ): Promise<TranscriptView> {
-  if (!UUID.test(id)) throw new RecordingNotFoundError();
+  if (!isUuid(id)) throw new RecordingNotFoundError();
   const recording = await db.recording.findFirst({
     where: { id, ownerId: user.id },
     select: {
@@ -73,7 +71,7 @@ export async function getTranscript(
     id: recording.id,
     title: displayTitle(recording.title, facts),
     meta: transcriptMeta(facts, now),
-    status: recording.status,
+    ...recordingState(recording.status),
     groups,
   };
 }

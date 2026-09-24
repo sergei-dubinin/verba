@@ -1,5 +1,8 @@
+import { rm } from "node:fs/promises";
 import { test as base, createBdd } from "playwright-bdd";
+import { audioDir } from "@/server/audio/storage";
 import { db } from "@/server/db";
+import { fakeStt } from "@/server/stt/fake";
 import type { RecordingGroup } from "@/server/recordings/list";
 import type { TranscriptView } from "@/server/transcript/get";
 
@@ -11,6 +14,8 @@ export type RecordingRef = {
   // Метка провайдера → порядок первого появления.
   labels: Record<string, number>;
   utterances: { label: string; startMs: number; text: string }[];
+  // Размер аудиофайла, с которым запись создана; у записей без файла — нет.
+  audioSize?: number;
 };
 
 // Состояние одного сценария: то, что шаги передают друг другу.
@@ -28,6 +33,11 @@ export type ScenarioContext = {
   list?: RecordingGroup[];
   transcript?: TranscriptView;
   openError?: unknown;
+  // Последний загружаемый файл и отказ загрузки («запись не создаётся»).
+  upload?: { file: string; size: number };
+  uploadError?: unknown;
+  // Реплики последнего ответа провайдера — для «транскрипт доступен».
+  sttUtterances?: { speaker: string; startMs: number; text: string }[];
 };
 
 export const test = base.extend<{ ctx: ScenarioContext; cleanDb: void }>({
@@ -49,6 +59,8 @@ export const test = base.extend<{ ctx: ScenarioContext; cleanDb: void }>({
         const list = tables.map((t) => `"public"."${t.tablename}"`).join(", ");
         await db.$executeRawUnsafe(`TRUNCATE ${list} CASCADE`);
       }
+      await rm(audioDir(), { recursive: true, force: true });
+      fakeStt.reset();
       await use();
     },
     { auto: true },

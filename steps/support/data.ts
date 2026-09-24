@@ -1,6 +1,9 @@
 import { randomUUID } from "node:crypto";
+import { createReadStream } from "node:fs";
 import { expect } from "@playwright/test";
 import { db } from "@/server/db";
+import { uploadRecording } from "@/server/uploads/upload";
+import { fileSize } from "./audio";
 import { MONTHS_SHORT, fromZoned } from "@/server/time";
 import type { RecordingStatus } from "@/generated/prisma/client";
 import type { RecordingRef, ScenarioContext } from "./fixtures";
@@ -89,4 +92,21 @@ export function numeral(word: string): number {
   const n = NUMERALS[word];
   expect(n, `число прописью «${word}»`).toBeDefined();
   return n;
+}
+
+// Загрузка файла, как её делает экран: сервис загрузки с потоком файла.
+// filename — имя из сценария, file — что на самом деле отправляется.
+// Созданная запись становится текущей.
+export async function uploadFile(
+  ctx: ScenarioContext,
+  file: string,
+  filename: string,
+): Promise<RecordingRef> {
+  const user = currentUser(ctx);
+  const size = await fileSize(file);
+  ctx.upload = { file, size };
+  const { recordingId } = await uploadRecording(user, { filename, body: createReadStream(file) });
+  const ref: RecordingRef = { id: recordingId, ownerId: user.id, title: "", labels: {}, utterances: [], audioSize: size };
+  ctx.currentRecording = ref;
+  return ref;
 }
