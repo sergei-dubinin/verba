@@ -1,0 +1,118 @@
+/* Транскрипт: docs/design/screens/transcript.html, transcript-desktop.html. */
+
+.page {
+  min-height: 100dvh;
+  background: var(--color-canvas);
+}
+
+.main {
+  padding: 0 var(--space-md) var(--space-xxl);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxs);
+  padding: var(--space-md) 0 var(--space-md);
+}
+
+/* .t-display-md, но плотнее: в макете 34 px с высотой строки 1.15. */
+.title {
+  margin: 0;
+  line-height: 1.15;
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  margin: 0;
+  color: var(--color-ink-muted-48);
+}
+
+/* Телефон: имя и время строкой над текстом; между спикерами — 32 px. */
+.group + .group {
+  margin-top: var(--space-xl);
+}
+
+.utterance + .utterance {
+  margin-top: var(--space-sm);
+}
+
+.aside {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+}
+
+.speaker[data-color="1"] { color: var(--color-speaker-1); }
+.speaker[data-color="2"] { color: var(--color-speaker-2); }
+.speaker[data-color="3"] { color: var(--color-speaker-3); }
+.speaker[data-color="4"] { color: var(--color-speaker-4); }
+.speaker[data-color="5"] { color: var(--color-speaker-5); }
+.speaker[data-color="6"] { color: var(--color-speaker-6); }
+
+.time {
+  color: var(--color-ink-muted-48);
+}
+
+.text {
+  margin: var(--space-xxs) 0 0;
+  color: var(--color-body);
+  overflow-wrap: anywhere;
+}
+
+/* 734 px — --bp-tablet-portrait (var() в условии @media не работает).
+   Десктоп: колонка по центру, слева 120 px с именем и временем, справа
+   текст. Заголовок — значения .t-display-lg (40 px, 1.1, SF Pro Display). */
+@media (min-width: 734px) {
+  .main {
+    max-width: calc(var(--measure-text) - 2 * var(--space-section) + 2 * var(--space-md));
+    margin: 0 auto;
+    padding-top: calc(var(--space-xl) + var(--space-xs));
+  }
+
+  .head {
+    gap: var(--space-xs);
+    padding: 0 0 calc(var(--space-lg) + var(--space-xxs));
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .title {
+    font-family: var(--font-display);
+    font-size: 40px;
+    line-height: 1.1;
+    letter-spacing: 0;
+  }
+
+  .body {
+    margin-top: calc(var(--space-xl) + var(--space-xxs));
+  }
+
+  .group + .group {
+    margin-top: calc(var(--space-xl) + var(--space-xxs));
+  }
+
+  .utterance {
+    display: flex;
+    gap: var(--space-lg);
+  }
+
+  .utterance + .utterance {
+    margin-top: var(--space-xs);
+  }
+
+  .aside {
+    flex-shrink: 0;
+    width: calc(2 * var(--space-xxl) + var(--space-lg));
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--space-xxs);
+    text-align: right;
+  }
+
+  .text {
+    flex-grow: 1;
+    min-width: 0;
+    margin: 0;
+  }
+}

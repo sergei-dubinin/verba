@@ -1,0 +1,22 @@
+/* «Не найдено»: как пустое состояние списка (list-empty.html). */
+
+.page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-canvas-parchment);
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+}
+
+.text {
+  margin: 0;
+  text-align: center;
+  color: var(--color-ink-muted-48);
+}

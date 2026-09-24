@@ -1,8 +1,8 @@
-import { randomUUID } from "node:crypto";
 import { expect, type Page } from "@playwright/test";
 import { db } from "@/server/db";
 import { SESSION_COOKIE } from "@/server/auth/cookie";
 import { getSessionUser } from "@/server/auth/sessions";
+import { createRecording, ensureUser } from "../support/data";
 import { Given, Then, When } from "../support/fixtures";
 
 const pathnameIs = (path: string) => (url: URL) => url.pathname === path;
@@ -31,10 +31,11 @@ When("я открываю список записей", async ({ page }) => {
   await page.goto("/");
 });
 
-// Записей ещё нет; proxy отправляет на вход раньше любого обращения к данным.
-// В срезе 2 — настоящая запись другого пользователя (план среза 1, решение 8).
-When("я открываю транскрипт чужой записи", async ({ page }) => {
-  await page.goto(`/recordings/${randomUUID()}`);
+// Настоящая готовая запись другого пользователя («boris» из предыстории).
+When("я открываю транскрипт чужой записи", async ({ page, ctx }) => {
+  const owner = await ensureUser("boris");
+  const recording = await createRecording(ctx, owner.id, { title: "Чужая запись" });
+  await page.goto(`/recordings/${recording.id}`);
 });
 
 // Ждёт конца отправки: ответ сервера на POST /login получен, и кнопка
