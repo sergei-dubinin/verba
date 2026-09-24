@@ -19,7 +19,7 @@
 | 1 | Вход и тестовая обвязка | BR-17, BR-23, NFR-04 | готов | [01-auth.md](01-auth.md) |
 | 2 | Список и транскрипт | BR-09, BR-10, BR-11, BR-12, BR-13, BR-14, BR-18, BR-22 | готов | [02-list-transcript.md](02-list-transcript.md) |
 | 3 | Загрузка и обработка: фейк STT в формате AssemblyAI, синхронная очередь, воркер, потоковая загрузка | BR-01, BR-03, BR-04, BR-05, BR-06, BR-07, BR-08, BR-20, BR-21 | готов | [03-upload-processing.md](03-upload-processing.md) |
-| 3а | Провайдер STT: клиент AssemblyAI, вебхук, «подметальщик», ADR 0005 | NFR-02; BR-04, BR-06, BR-08 на настоящем провайдере | план на ревью | [03a-stt-provider.md](03a-stt-provider.md) |
+| 3а | Провайдер STT: клиент AssemblyAI, вебхук, «подметальщик», ADR 0005 | NFR-02; BR-04, BR-06, BR-08 на настоящем провайдере | план принят | [03a-stt-provider.md](03a-stt-provider.md) |
 | 4 | Управление записью | BR-15, BR-16, BR-19 | не начат | — |
 | 5 | Папки | BR-02, BR-24, BR-26, BR-25, BR-27, BR-28, BR-29, BR-30, BR-31 | не начат | — |
 
