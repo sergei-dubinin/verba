@@ -18,12 +18,16 @@
     "test:e2e": "bddgen && VERBA_E2E=1 playwright test --project e2e",
     "user:create": "tsx scripts/user.ts create",
     "user:passwd": "tsx scripts/user.ts passwd",
-    "demo:seed": "tsx scripts/demo.ts"
+    "demo:seed": "tsx scripts/demo.ts",
+    "worker": "tsx --env-file-if-exists=.env src/worker.ts",
+    "stt:deliver": "tsx scripts/stt.ts"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.2.1",
     "@prisma/adapter-pg": "7.10.0",
     "@prisma/client": "7.10.0",
+    "bullmq": "^6.3.8",
+    "ioredis": "^6.0.0",
     "next": "16.3.6",
     "pg": "^8.23.0",
     "react": "19.2.8",

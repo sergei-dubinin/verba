@@ -1,12 +1,11 @@
-import type { RecordingStatus } from "../../generated/prisma/client";
 import { db } from "../db";
 import { dateGroupLabel, displayTitle, listMeta } from "./format";
+import { recordingState, type RecordingStateView } from "./state";
 
-export type RecordingListItem = {
+export type RecordingListItem = RecordingStateView & {
   id: string;
   title: string;
   meta: string;
-  status: RecordingStatus;
 };
 
 export type RecordingGroup = { label: string; recordings: RecordingListItem[] };
@@ -43,7 +42,7 @@ export async function listRecordings(user: { id: string }, now: Date): Promise<R
         speakerCount: row.status === "done" ? row._count.speakers : null,
       }),
       meta: listMeta(row.createdAt, row.durationMs, now),
-      status: row.status,
+      ...recordingState(row.status),
     });
   }
   return groups;

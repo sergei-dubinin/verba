@@ -51,3 +51,7 @@ next-env.d.ts
 /blob-report/
 /.next-e2e/
 /.playwright-mcp/
+
+# Аудио разработки и кэш тестовых файлов
+/data/
+/.cache/

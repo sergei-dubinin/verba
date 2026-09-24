@@ -1,0 +1,17 @@
+/* Серый спиннер обработки: .dc-spinner из list.html и
+   transcript-processing.html — 16 px, кольцо 12 % чёрного, верх — muted. */
+.spinner {
+  flex-shrink: 0;
+  width: calc(var(--space-sm) + var(--space-xxs));
+  height: calc(var(--space-sm) + var(--space-xxs));
+  border-radius: var(--radius-full);
+  border: 2px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+  border-top-color: var(--color-ink-muted-48);
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

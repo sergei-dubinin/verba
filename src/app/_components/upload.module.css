@@ -1,0 +1,283 @@
+/* Загрузка: кнопка — list.html (телефон, внизу), list-desktop.html (десктоп,
+   в панели); шторка — upload-sheet.html, upload-progress.html,
+   upload-format-error.html; диалог — list-desktop-upload.html. */
+
+/* Телефон: полоса внизу экрана, как у липкой панели. */
+.bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: var(--space-sm) var(--space-md) var(--space-lg);
+  background: color-mix(in srgb, var(--color-canvas-parchment) 80%, transparent);
+  backdrop-filter: var(--backdrop-frosted);
+  -webkit-backdrop-filter: var(--backdrop-frosted);
+  border-top: 1px solid var(--color-hairline);
+}
+
+.primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  /* 52 px: зона касания плюс отступы (таблица размеров verba-ui). */
+  min-height: calc(var(--size-touch) + 2 * var(--space-xxs));
+  padding: 0 var(--space-lg);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  cursor: pointer;
+}
+
+/* В макете #f0f0f0 — ближайший токен parchment. */
+.primary:disabled {
+  background: var(--color-canvas-parchment);
+  color: var(--color-ink-muted-48);
+  cursor: default;
+}
+
+.primary:focus-visible,
+.secondary:focus-visible,
+.link:focus-visible,
+.cancelBottom:focus-visible {
+  outline: 2px solid var(--color-primary-focus);
+  outline-offset: 2px;
+}
+
+/* Телефон: шторка снизу. */
+.sheet {
+  width: 100%;
+  max-width: 100%;
+  max-height: 100dvh;
+  margin: auto 0 0;
+  padding: var(--space-xs) var(--space-md) calc(var(--space-lg) + var(--space-xxs));
+  border: 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--color-canvas);
+  box-shadow: var(--shadow-sheet);
+  color: var(--color-ink);
+}
+
+.sheet::backdrop {
+  background: var(--scrim);
+}
+
+/* 36 × 5 px. */
+.grabber {
+  width: calc(var(--space-xl) + var(--space-xxs));
+  height: calc(var(--space-xxs) + 1px);
+  margin: 0 auto var(--space-xxs);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-ink) 18%, transparent);
+}
+
+/* «Отмена» слева в колонке 80 px, заголовок по центру. */
+.head {
+  display: grid;
+  grid-template-columns: calc(var(--space-xxl) + var(--space-xl)) 1fr calc(var(--space-xxl) + var(--space-xl));
+  align-items: center;
+  min-height: var(--size-touch);
+}
+
+.link {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+.title {
+  grid-column: 2;
+  margin: 0;
+  text-align: center;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.file {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xxs);
+  padding: var(--space-md);
+  border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+  background: var(--color-canvas-parchment);
+}
+
+.fileError {
+  border-color: var(--color-danger);
+}
+
+.fileName {
+  overflow-wrap: anywhere;
+}
+
+.muted {
+  color: var(--color-ink-muted-48);
+}
+
+.error {
+  color: var(--color-danger);
+}
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-top: var(--space-sm);
+  text-align: center;
+}
+
+.track {
+  height: var(--space-xxs);
+  border-radius: var(--radius-pill);
+  background: var(--color-hairline);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+  transition: width 0.2s linear;
+}
+
+.secondary {
+  min-height: calc(var(--size-touch) + 2 * var(--space-xxs));
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-pearl);
+  color: var(--color-primary);
+  cursor: pointer;
+}
+
+.foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+}
+
+.submit {
+  margin-top: var(--space-xxs);
+}
+
+/* Подпись под кнопкой: в макете высота строки 1.4. */
+.hint {
+  order: 1;
+  margin: 0;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--color-ink-muted-48);
+}
+
+.cancelBottom {
+  display: none;
+}
+
+/* 734 px — --bp-tablet-portrait. Десктоп: кнопка в правом краю панели
+   (60 px), диалог 460 px по центру; кнопки 40 px, 14 px (.t-button-utility
+   числами — классы в @media не применить). */
+@media (min-width: 734px) {
+  .bar {
+    top: 0;
+    bottom: auto;
+    left: auto;
+    display: flex;
+    align-items: center;
+    height: calc(var(--size-subnav) + var(--space-xs));
+    padding: 0 var(--space-xl);
+    background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: 0;
+  }
+
+  .primary {
+    width: auto;
+    min-height: calc(var(--space-xl) + var(--space-xs));
+    padding: 0 calc(var(--space-lg) - 2px);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.29;
+    letter-spacing: -0.224px;
+  }
+
+  .sheet {
+    /* 460 px. */
+    width: calc(5 * var(--space-section) + var(--space-xxl) + var(--space-sm));
+    max-width: calc(100vw - 2 * var(--space-xl));
+    margin: auto;
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-dialog);
+  }
+
+  .grabber,
+  .link {
+    display: none;
+  }
+
+  .head {
+    display: block;
+    min-height: 0;
+    margin-bottom: var(--space-md);
+  }
+
+  .title {
+    text-align: left;
+  }
+
+  .body {
+    margin-top: 0;
+  }
+
+  .foot {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    margin-top: var(--space-lg);
+  }
+
+  .hint {
+    order: 0;
+    text-align: left;
+  }
+
+  .actions {
+    flex-direction: row;
+    gap: var(--space-xs);
+    margin-left: auto;
+  }
+
+  .submit {
+    margin-top: 0;
+  }
+
+  .cancelBottom {
+    display: flex;
+    align-items: center;
+    min-height: calc(var(--space-xl) + var(--space-xs));
+    padding: 0 calc(var(--space-lg) - var(--space-xxs));
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-pill);
+    background: var(--color-canvas);
+    color: var(--color-primary);
+    cursor: pointer;
+  }
+}

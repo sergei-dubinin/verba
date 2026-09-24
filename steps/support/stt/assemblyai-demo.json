@@ -1,0 +1,228 @@
+{
+  "id": "371e3847-1a1a-4fc6-bb51-af9b0208ddf4",
+  "language_model": "assemblyai_default",
+  "acoustic_model": "assemblyai_default",
+  "language_code": "ru",
+  "speech_understanding": null,
+  "translated_texts": null,
+  "status": "completed",
+  "audio_url": "https://cdn.assemblyai.com/upload/526b7240675c98f6f0c50973cf8f06877c520d5863d05df348632a50e25f03bf/6cc58f28-d64c-41f6-88db-004e77bf119b",
+  "text": "Тест, тест, проверка, проверка чай с шарлоткой.",
+  "words": [
+    {
+      "text": "Тест,",
+      "start": 1128,
+      "end": 1908,
+      "confidence": 0.397,
+      "speaker": "A"
+    },
+    {
+      "text": "тест,",
+      "start": 2008,
+      "end": 2248,
+      "confidence": 0.815,
+      "speaker": "A"
+    },
+    {
+      "text": "проверка,",
+      "start": 2368,
+      "end": 3008,
+      "confidence": 0.653,
+      "speaker": "A"
+    },
+    {
+      "text": "проверка",
+      "start": 3828,
+      "end": 4768,
+      "confidence": 0.970459,
+      "speaker": "A"
+    },
+    {
+      "text": "чай",
+      "start": 4768,
+      "end": 5408,
+      "confidence": 0.56689453,
+      "speaker": "A"
+    },
+    {
+      "text": "с",
+      "start": 5408,
+      "end": 5528,
+      "confidence": 0.8730469,
+      "speaker": "A"
+    },
+    {
+      "text": "шарлоткой.",
+      "start": 5528,
+      "end": 6188,
+      "confidence": 0.897,
+      "speaker": "A"
+    }
+  ],
+  "utterances": [
+    {
+      "speaker": "A",
+      "text": "Тест, тест, проверка, проверка чай с шарлоткой.",
+      "confidence": 0.7389144,
+      "start": 1128,
+      "end": 6188,
+      "words": [
+        {
+          "text": "Тест,",
+          "start": 1128,
+          "end": 1908,
+          "confidence": 0.397,
+          "speaker": "A"
+        },
+        {
+          "text": "тест,",
+          "start": 2008,
+          "end": 2248,
+          "confidence": 0.815,
+          "speaker": "A"
+        },
+        {
+          "text": "проверка,",
+          "start": 2368,
+          "end": 3008,
+          "confidence": 0.653,
+          "speaker": "A"
+        },
+        {
+          "text": "проверка",
+          "start": 3828,
+          "end": 4768,
+          "confidence": 0.970459,
+          "speaker": "A"
+        },
+        {
+          "text": "чай",
+          "start": 4768,
+          "end": 5408,
+          "confidence": 0.56689453,
+          "speaker": "A"
+        },
+        {
+          "text": "с",
+          "start": 5408,
+          "end": 5528,
+          "confidence": 0.8730469,
+          "speaker": "A"
+        },
+        {
+          "text": "шарлоткой.",
+          "start": 5528,
+          "end": 6188,
+          "confidence": 0.897,
+          "speaker": "A"
+        }
+      ]
+    }
+  ],
+  "confidence": 0.7389144,
+  "audio_duration": 8,
+  "punctuate": true,
+  "format_text": true,
+  "dual_channel": false,
+  "webhook_url": null,
+  "webhook_status_code": null,
+  "webhook_auth": false,
+  "webhook_auth_header_name": null,
+  "speed_boost": false,
+  "auto_highlights_result": null,
+  "auto_highlights": false,
+  "audio_start_from": null,
+  "audio_end_at": null,
+  "word_boost": [],
+  "boost_param": null,
+  "prompt": null,
+  "keyterms_prompt": [],
+  "filter_profanity": false,
+  "redact_pii": false,
+  "redact_pii_audio": false,
+  "redact_pii_audio_quality": null,
+  "redact_pii_audio_options": null,
+  "redact_pii_policies": null,
+  "redact_pii_sub": null,
+  "redact_static_entities": null,
+  "speaker_labels": true,
+  "speaker_options": {
+    "min_speakers_expected": null,
+    "max_speakers_expected": null,
+    "advanced_speaker_segmentation": false
+  },
+  "content_safety": false,
+  "iab_categories": false,
+  "content_safety_labels": {
+    "status": "unavailable",
+    "results": [],
+    "summary": {}
+  },
+  "iab_categories_result": {
+    "status": "unavailable",
+    "results": [],
+    "summary": {}
+  },
+  "language_detection": true,
+  "language_detection_options": {
+    "expected_languages": null,
+    "fallback_language": null,
+    "code_switching": true,
+    "code_switching_confidence_threshold": null,
+    "on_low_language_confidence": null,
+    "on_no_speech_detected": null,
+    "swiss_german": null,
+    "language_detection_model": null,
+    "localization": null
+  },
+  "language_detection_results": {
+    "code_switching_languages": [
+      {
+        "language_code": "ru",
+        "confidence": 0.9976374
+      },
+      {
+        "language_code": "en",
+        "confidence": 0.00048047747
+      }
+    ]
+  },
+  "language_confidence_threshold": null,
+  "language_confidence": 0.9976,
+  "custom_spelling": null,
+  "throttled": false,
+  "auto_chapters": false,
+  "summarization": false,
+  "summary_type": null,
+  "summary_model": null,
+  "custom_topics": false,
+  "topics": [],
+  "speech_threshold": null,
+  "speech_model": null,
+  "speech_models": [
+    "universal-2"
+  ],
+  "speech_model_used": "universal-2",
+  "metadata": {
+    "warnings": [
+      {
+        "message": "For highest accuracy and broadest language coverage: set \"speech_models\" to [\"universal-3-5-pro\", \"universal-2\"]."
+      }
+    ]
+  },
+  "temperature": null,
+  "remove_audio_tags": "all",
+  "chapters": null,
+  "disfluencies": false,
+  "entity_detection": false,
+  "sentiment_analysis": false,
+  "sentiment_analysis_results": null,
+  "entities": null,
+  "speakers_expected": null,
+  "summary": null,
+  "custom_topics_results": null,
+  "is_deleted": null,
+  "multichannel": null,
+  "project_id": 1569321,
+  "token_id": 1584753
+}

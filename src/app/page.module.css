@@ -2,6 +2,8 @@
    пустое состояние — list-empty.html. */
 
 .page {
+  /* Полоса «Загрузить» на телефоне: 12 + 52 + 24 px и линия сверху. */
+  --size-bottom-bar: calc(var(--space-sm) + var(--size-touch) + 2 * var(--space-xxs) + var(--space-lg) + 1px);
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -33,6 +35,8 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-xl);
+  /* Место под полосу «Загрузить» внизу (list-empty.html). */
+  padding-bottom: calc(var(--space-xl) + var(--size-bottom-bar));
 }
 
 .emptyText {
@@ -44,7 +48,8 @@
 /* Записи по группам дат. На телефоне — белые карточки со строками. */
 
 .list {
-  padding: var(--space-xxs) var(--space-md) var(--space-xxl);
+  /* Снизу — место под полосу «Загрузить» (list.html). */
+  padding: var(--space-xxs) var(--space-md) calc(var(--space-lg) + var(--size-bottom-bar));
 }
 
 .groupTitle {
@@ -95,8 +100,18 @@
   overflow-wrap: anywhere;
 }
 
-.rowMeta {
+.rowDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.rowMeta,
+.rowStatus {
   color: var(--color-ink-muted-48);
+}
+
+.rowDetails[data-state="failed"] .rowStatus {
+  color: var(--color-danger);
 }
 
 .chevron {
@@ -150,6 +165,25 @@
   }
 
   .chevron {
+    display: none;
+  }
+
+  .empty {
+    padding-bottom: var(--space-xl);
+  }
+
+  /* На десктопе статус обработки — продолжением строки метаданных, а у
+     ошибки — вместо неё (list-desktop.html). */
+  .rowDetails {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .rowDetails[data-state="processing"] .rowStatus::before {
+    content: "\00a0· ";
+  }
+
+  .rowDetails[data-state="failed"] .rowMeta {
     display: none;
   }
 }

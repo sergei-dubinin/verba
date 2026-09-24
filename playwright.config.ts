@@ -1,4 +1,4 @@
-import { TEST_DATABASE_URL } from "./steps/support/env";
+import { TEST_DATABASE_URL, TEST_ENV } from "./steps/support/env";
 import { defineConfig, devices } from "@playwright/test";
 import { defineBddConfig } from "playwright-bdd";
 
@@ -53,7 +53,7 @@ export default defineConfig({
         port,
         timeout: 240_000,
         reuseExistingServer: false,
-        env: { DATABASE_URL: TEST_DATABASE_URL, NEXT_DIST_DIR: ".next-e2e" },
+        env: { ...TEST_ENV, DATABASE_URL: TEST_DATABASE_URL, NEXT_DIST_DIR: ".next-e2e" },
       }
     : undefined,
 });
