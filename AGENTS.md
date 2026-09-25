@@ -22,6 +22,7 @@
   `domain/`, `e2e/`; `support/` — фикстуры, тестовая база. Конфиг — `playwright.config.ts`.
 - `scripts/` — команды администратора (`user.ts`) и демо-данные для разработки (`demo.ts`).
 - `prisma/schema.prisma` — схема БД; клиент генерируется в `src/generated/` (не в git).
+- `docs/status.html` — статус реализации: что работает, что нет, что дальше; снимок прогона сценариев. Данные — JSON-блок `status-data` в начале файла, обновлять после каждого вертикального среза.
 - `docs/agent-skills.html` — реестр скиллов и плагинов агента: что подключено, что рекомендовано и почему, опыт прошлого проекта. Данные — JSON-блок `registry-data` в начале файла.
 
 ## Запуск
@@ -119,6 +120,7 @@ pnpm stt:smoke                  # живой AssemblyAI: meeting.m4a туда и
 - [STT + диаризация: провайдеры](docs/research/2026-09-stt-diarization-providers.md)
 - [Голосовые профили: узнавание спикеров между записями](docs/research/2026-09-voice-profiles.md)
 - [AssemblyAI: запросы, вебхук, удаление, загрузка из Node](docs/research/2026-09-assemblyai.md)
+- [Тестовая обвязка для ревью PR: CI, статус требований, снимки экранов](docs/research/2026-09-pr-review-harness.md)
 
 <!-- BEGIN:nextjs-agent-rules -->
 

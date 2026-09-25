@@ -1,0 +1,313 @@
+{
+  "summary": {
+    "recall": 0.9,
+    "specificity": 1.0,
+    "accuracy": 0.95
+  },
+  "report": [
+    {
+      "query": "сверстай список записей по list.html и list-desktop.html: группы по датам, в строках обработка и ошибка",
+      "should_trigger": true,
+      "hits": 3,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [],
+      "notes": [
+        "timeout"
+      ],
+      "seconds": [
+        33.9,
+        53.1,
+        150.0
+      ]
+    },
+    {
+      "query": "на телефоне кнопка «Войти» ниже чем надо — 44 px, а в макете 52. поправь",
+      "should_trigger": true,
+      "hits": 3,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [],
+      "notes": [],
+      "seconds": [
+        33.5,
+        78.5,
+        39.9
+      ]
+    },
+    {
+      "query": "съехала вёрстка на экране входа: на десктопе поля уезжают влево от подписей",
+      "should_trigger": true,
+      "hits": 3,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [],
+      "notes": [],
+      "seconds": [
+        34.4,
+        29.4,
+        32.6
+      ]
+    },
+    {
+      "query": "сделай пустое состояние списка — когда у пользователя ещё нет ни одной записи",
+      "should_trigger": true,
+      "hits": 0,
+      "runs": 3,
+      "correct": false,
+      "other_skills": [],
+      "notes": [
+        "timeout",
+        "timeout",
+        "timeout"
+      ],
+      "seconds": [
+        150.0,
+        150.0,
+        150.0
+      ]
+    },
+    {
+      "query": "сверь экран транскрипта с макетом на 390 и 1280, сними скрины через playwright и покажи расхождения",
+      "should_trigger": true,
+      "hits": 3,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [],
+      "notes": [],
+      "seconds": [
+        37.4,
+        49.6,
+        43.7
+      ]
+    },
+    {
+      "query": "добавь спиннер в кнопку «Повторить» на экране ошибки транскрипта, пока запрос идёт",
+      "should_trigger": true,
+      "hits": 2,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [],
+      "notes": [
+        "timeout",
+        "timeout"
+      ],
+      "seconds": [
+        150.0,
+        143.8,
+        150.0
+      ]
+    },
+    {
+      "query": "шторка загрузки: на телефоне выезжает снизу, на десктопе диалог по центру. как это сделать одной вёрсткой?",
+      "should_trigger": true,
+      "hits": 3,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [],
+      "notes": [],
+      "seconds": [
+        64.2,
+        41.2,
+        61.6
+      ]
+    },
+    {
+      "query": "в page.module.css списка захардкожены #f5f5f7 и padding 20px — переведи на переменные",
+      "should_trigger": true,
+      "hits": 3,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [],
+      "notes": [],
+      "seconds": [
+        41.0,
+        30.8,
+        28.5
+      ]
+    },
+    {
+      "query": "реплики в транскрипте слипаются, между спикерами нужен отступ побольше, как в transcript.html",
+      "should_trigger": true,
+      "hits": 2,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [],
+      "notes": [],
+      "seconds": [
+        31.4,
+        32.5,
+        26.0
+      ]
+    },
+    {
+      "query": "диалог подтверждения удаления записи — сверстай: красная «Удалить» и «Отмена»",
+      "should_trigger": true,
+      "hits": 3,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [],
+      "notes": [
+        "timeout"
+      ],
+      "seconds": [
+        34.3,
+        64.9,
+        150.0
+      ]
+    },
+    {
+      "query": "почини удаление папки — записи внутри должны переезжать в корень, а сейчас пропадают вместе с ней",
+      "should_trigger": false,
+      "hits": 0,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [
+        "verba-implement"
+      ],
+      "notes": [
+        "timeout"
+      ],
+      "seconds": [
+        43.9,
+        32.9,
+        150.0
+      ]
+    },
+    {
+      "query": "напиши сервис listRecordings в src/server: записи пользователя, новые сверху, сгруппированные по датам",
+      "should_trigger": false,
+      "hits": 0,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [
+        "verba-implement"
+      ],
+      "notes": [
+        "timeout"
+      ],
+      "seconds": [
+        32.9,
+        41.4,
+        150.0
+      ]
+    },
+    {
+      "query": "prisma: добавь поле speakerName в Segment и сделай миграцию",
+      "should_trigger": false,
+      "hits": 0,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [],
+      "notes": [],
+      "seconds": [
+        34.5,
+        37.7,
+        42.0
+      ]
+    },
+    {
+      "query": "в proxy.ts сделай редирект на /login, если нет cookie сессии",
+      "should_trigger": false,
+      "hits": 0,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [],
+      "notes": [],
+      "seconds": [
+        35.7,
+        27.8,
+        30.7
+      ]
+    },
+    {
+      "query": "перевыгрузи макеты из холста в docs/design, там до сих пор reco вместо verba на экране входа",
+      "should_trigger": false,
+      "hits": 0,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [],
+      "notes": [
+        "timeout"
+      ],
+      "seconds": [
+        150.0,
+        50.1,
+        44.2
+      ]
+    },
+    {
+      "query": "поправь docs/design-prompt.md: у каждой реплики транскрипта должно быть время, добавь это в требования к экрану",
+      "should_trigger": false,
+      "hits": 0,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [],
+      "notes": [],
+      "seconds": [
+        44.3,
+        33.2,
+        37.6
+      ]
+    },
+    {
+      "query": "добавь тёмную тему и фильтр по источнику на страницу docs/agent-skills.html",
+      "should_trigger": false,
+      "hits": 0,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [],
+      "notes": [
+        "timeout",
+        "timeout"
+      ],
+      "seconds": [
+        150.0,
+        150.0,
+        28.5
+      ]
+    },
+    {
+      "query": "чем концептуально отличается вариант дизайна в docs/design-vercel от текущего? коротко, без правок",
+      "should_trigger": false,
+      "hits": 0,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [],
+      "notes": [],
+      "seconds": [
+        29.3,
+        20.8,
+        25.5
+      ]
+    },
+    {
+      "query": "объясни, как в next 16 работает useActionState и чем он отличается от старого useFormState",
+      "should_trigger": false,
+      "hits": 0,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [],
+      "notes": [],
+      "seconds": [
+        37.2,
+        91.0,
+        33.3
+      ]
+    },
+    {
+      "query": "накидай ADR, почему в первой версии нет тёмной темы: контекст, решение, последствия",
+      "should_trigger": false,
+      "hits": 0,
+      "runs": 3,
+      "correct": true,
+      "other_skills": [],
+      "notes": [],
+      "seconds": [
+        33.2,
+        57.6,
+        44.4
+      ]
+    }
+  ]
+}
