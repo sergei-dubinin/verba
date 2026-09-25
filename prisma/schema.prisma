@@ -49,23 +49,27 @@ enum RecordingStatus {
 // Запись. Название пользователя — в title; пустое → автоназвание, которое
 // считается при чтении (BR-14). folder_id появится вместе с папками.
 model Recording {
-  id            String          @id @default(uuid()) @db.Uuid
+  id              String          @id @default(uuid()) @db.Uuid
   // Без каскада: удалить пользователя с записями нельзя, иначе на диске
   // останутся аудиофайлы без строк.
-  ownerId       String          @map("owner_id") @db.Uuid
-  owner         User            @relation(fields: [ownerId], references: [id])
-  title         String?
-  audioPath     String          @map("audio_path")
-  durationMs    Int?            @map("duration_ms")
-  status        RecordingStatus
-  error         String?
-  provider      String
-  providerJobId String?         @map("provider_job_id")
-  providerRaw   Json?           @map("provider_raw")
-  createdAt     DateTime        @default(now()) @map("created_at")
-  completedAt   DateTime?       @map("completed_at")
-  speakers      Speaker[]
-  utterances    Utterance[]
+  ownerId         String          @map("owner_id") @db.Uuid
+  owner           User            @relation(fields: [ownerId], references: [id])
+  title           String?
+  audioPath       String          @map("audio_path")
+  durationMs      Int?            @map("duration_ms")
+  status          RecordingStatus
+  error           String?
+  provider        String
+  // Уникален: по нему находят запись вебхук и результат провайдера.
+  providerJobId   String?         @unique @map("provider_job_id")
+  providerRaw     Json?           @map("provider_raw")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  completedAt     DateTime?       @map("completed_at")
+  // Время последнего перехода статуса: от него считают пороги проверки
+  // незавершённых записей (план среза 3а, решение 11).
+  statusChangedAt DateTime        @default(now()) @map("status_changed_at")
+  speakers        Speaker[]
+  utterances      Utterance[]
 
   @@index([ownerId, createdAt])
   @@map("recording")

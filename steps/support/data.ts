@@ -51,6 +51,7 @@ export async function createRecording(
       audioPath: `/nonexistent/${id}.m4a`,
       provider: "test",
       completedAt: status === "done" ? createdAt : null,
+      statusChangedAt: createdAt,
     },
   });
   const ref: RecordingRef = { id, ownerId, title: title ?? "", labels: {}, utterances: [] };

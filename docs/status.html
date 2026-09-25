@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Статус реализации verba</title>
+<!--
+  Статус реализации verba: что уже работает, что нет и что дальше.
+
+  Как обновлять (для людей и агентов):
+  - Все данные — в JSON-блоке <script id="status-data"> ниже. Разметка
+    строится из него; руками таблицы не править.
+  - Источники правды: порядок и границы вертикальных срезов — docs/plan/README.md;
+    требования — docs/requirements.md; статус требования — прогон
+    `pnpm test:spec` и `pnpm test:e2e`, а не этот файл.
+  - После закрытия вертикального среза или правки требований: прогнать оба
+    набора, обновить run (числа прогона), slices, reqs (поле spec = [зелёных,
+    всего] сценариев с тегом требования; «Структура сценария» — один сценарий),
+    now/next и поле updated. Изменение — строкой в journal.
+  - Поля требования: st — ok (сценарии зелёные) | part (зелёные, но есть
+    оговорка) | todo (сценарии пропущены) | none (сценариев нет).
+-->
+<style>
+  :root {
+    --ground: #f3f4f7;
+    --surface: #ffffff;
+    --raised: #f7f8fa;
+    --ink: #1b1c20;
+    --muted: #666a73;
+    --faint: #8d9098;
+    --hairline: #e1e3e8;
+    --accent: #0066cc;
+    --accent-soft: #e6f0fb;
+    --ok: #1d7a3c;
+    --ok-soft: #e7f4ec;
+    --wait: #955800;
+    --wait-soft: #fbf1e2;
+    --no: #b3261e;
+    --code-bg: #f1f2f5;
+    --focus: #0071e3;
+    --font-text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0e0f11;
+      --surface: #1a1b1e;
+      --raised: #222327;
+      --ink: #f1f2f4;
+      --muted: #a2a5ad;
+      --faint: #7b7e86;
+      --hairline: #2d2f34;
+      --accent: #3d9bff;
+      --accent-soft: #14263b;
+      --ok: #5bc97c;
+      --ok-soft: #15291d;
+      --wait: #eea64a;
+      --wait-soft: #2d2213;
+      --no: #ff7a70;
+      --code-bg: #141518;
+      --focus: #3d9bff;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0e0f11;
+    --surface: #1a1b1e;
+    --raised: #222327;
+    --ink: #f1f2f4;
+    --muted: #a2a5ad;
+    --faint: #7b7e86;
+    --hairline: #2d2f34;
+    --accent: #3d9bff;
+    --accent-soft: #14263b;
+    --ok: #5bc97c;
+    --ok-soft: #15291d;
+    --wait: #eea64a;
+    --wait-soft: #2d2213;
+    --no: #ff7a70;
+    --code-bg: #141518;
+    --focus: #3d9bff;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font: 15px/1.5 var(--font-text);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 80px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+  code, .mono { font-family: var(--font-mono); font-size: 0.86em; }
+  code { background: var(--code-bg); padding: 1px 5px; border-radius: 5px; overflow-wrap: anywhere; }
+
+  /* Шапка */
+  header.top { display: grid; gap: 10px; margin-bottom: 28px; }
+  .path { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); letter-spacing: 0.01em; }
+  h1 { font-family: var(--font-display); font-size: 32px; line-height: 1.12; font-weight: 650; letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
+  .lede { max-width: 68ch; color: var(--muted); margin: 0; font-size: 16px; }
+  nav.toc { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 6px; font-size: 14px; }
+
+  /* Сводка */
+  .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
+  .kpi { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 14px 16px 16px; display: grid; gap: 6px; align-content: start; }
+  .kpi .lbl { font-size: 13px; color: var(--muted); }
+  .kpi .val { font-family: var(--font-display); font-size: 26px; font-weight: 650; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .kpi .val small { font-size: 16px; color: var(--faint); font-weight: 500; }
+  .kpi .hint { font-size: 12.5px; color: var(--faint); }
+  .bar { height: 6px; border-radius: 99px; background: var(--hairline); overflow: hidden; }
+  .bar i { display: block; height: 100%; background: var(--ok); border-radius: 99px; }
+  .kpi.clean .val { color: var(--ok); }
+
+  /* Сейчас / дальше */
+  .now { display: grid; grid-template-columns: 1.1fr 1fr; gap: 12px; margin-bottom: 8px; }
+  .panel { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; padding: 16px 18px 18px; }
+  .panel h2 { font-family: var(--font-display); font-size: 17px; font-weight: 650; margin: 0 0 10px; }
+  .panel p { margin: 0 0 10px; max-width: 70ch; }
+  .panel ol, .panel ul { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+  .panel li b { font-weight: 600; }
+  .panel li span { color: var(--muted); }
+
+  /* Путь пользователя */
+  section.ctx { margin-top: 52px; }
+  section.ctx > h2 { font-family: var(--font-display); font-size: 24px; font-weight: 650; letter-spacing: -0.015em; margin: 0 0 6px; text-wrap: balance; }
+  section.ctx > .sub { color: var(--muted); margin: 0 0 18px; max-width: 72ch; }
+  section.ctx > h3 { font-size: 16px; margin: 26px 0 10px; font-weight: 650; }
+  section.ctx p, section.ctx li { max-width: 78ch; }
+  section.ctx ul { padding-left: 20px; display: grid; gap: 7px; margin: 0; }
+
+  .journey { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .journey .pill { justify-self: start; }
+  .journey li { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; max-width: none; }
+  .journey .n { font-size: 12px; color: var(--faint); font-variant-numeric: tabular-nums; }
+  .journey b { font-size: 14.5px; font-weight: 600; }
+  .journey .d { font-size: 13px; color: var(--muted); }
+  .journey li.ok { border-color: color-mix(in srgb, var(--ok) 35%, var(--hairline)); }
+  .journey li.todo { border-style: dashed; }
+
+  /* Срезы */
+  .slices { display: grid; gap: 0; background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; overflow: hidden; }
+  .slice { display: grid; grid-template-columns: 44px minmax(0, 1fr) 190px; gap: 16px; padding: 14px 18px; align-items: start; }
+  .slice + .slice { border-top: 1px solid var(--hairline); }
+  .slice .num { font-family: var(--font-display); font-size: 20px; font-weight: 650; color: var(--faint); font-variant-numeric: tabular-nums; line-height: 1.2; }
+  .slice.ok .num { color: var(--ok); }
+  .slice.part .num { color: var(--wait); }
+  .slice h3 { margin: 0 0 3px; font-size: 15.5px; font-weight: 650; }
+  .slice p { margin: 0; color: var(--muted); font-size: 14px; max-width: 72ch; }
+  .slice .ids { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag { font-family: var(--font-mono); font-size: 11.5px; padding: 1px 6px; border-radius: 5px; background: var(--code-bg); color: var(--muted); }
+  .slice .side { display: grid; gap: 6px; justify-items: start; font-size: 13px; color: var(--muted); }
+
+  .pill { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; padding: 3px 10px 3px 8px; border-radius: 99px; border: 1px solid var(--hairline); white-space: nowrap; }
+  .pill i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex: none; }
+  .st-ok { color: var(--ok); background: var(--ok-soft); border-color: transparent; }
+  .st-part { color: var(--wait); background: var(--wait-soft); border-color: transparent; }
+  .st-todo { color: var(--muted); }
+  .st-todo i { background: none; border: 1.5px solid currentColor; width: 6px; height: 6px; }
+  .st-none { color: var(--muted); border-style: dashed; }
+  .st-none i { background: var(--faint); }
+
+  /* Требования */
+  .toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .seg { display: inline-flex; background: var(--surface); border: 1px solid var(--hairline); border-radius: 10px; padding: 3px; gap: 2px; flex-wrap: wrap; }
+  .seg button { font: inherit; font-size: 14px; color: var(--muted); background: none; border: 0; border-radius: 7px; padding: 6px 12px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .seg button:hover { color: var(--ink); }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .group { margin-bottom: 26px; }
+  .group-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+  .group-head h3 { font-size: 16px; font-weight: 650; margin: 0; }
+  .group-head .count { font-variant-numeric: tabular-nums; color: var(--faint); font-size: 13.5px; }
+  .list { background: var(--surface); border: 1px solid var(--hairline); border-radius: 14px; overflow: hidden; }
+  .req { display: grid; grid-template-columns: 70px minmax(0, 1fr) 150px 92px 40px; gap: 14px; padding: 11px 18px; align-items: start; }
+  .req + .req { border-top: 1px solid var(--hairline); }
+  .req .id { font-family: var(--font-mono); font-size: 13px; font-weight: 600; padding-top: 1px; }
+  .req .txt { font-size: 14.5px; }
+  .req .note { display: block; font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .req .sc { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; padding-top: 2px; }
+  .req .sl { font-size: 13px; color: var(--faint); padding-top: 2px; text-align: right; }
+  .req.hidden, .group.hidden { display: none; }
+
+  .table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--hairline); }
+  tr:last-child td { border-bottom: 0; }
+  th { font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--faint); font-weight: 600; background: var(--raised); white-space: nowrap; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .journal { display: grid; background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; }
+  .journal div { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 14px; padding: 11px 16px; font-size: 14px; }
+  .journal div + div { border-top: 1px solid var(--hairline); }
+  .journal time { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); padding-top: 2px; }
+  footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--hairline); color: var(--muted); font-size: 13.5px; }
+
+  @media (max-width: 860px) {
+    .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .now { grid-template-columns: 1fr; }
+    .journey { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .slice { grid-template-columns: 34px minmax(0, 1fr); }
+    .slice .side { grid-column: 2; }
+    .req { grid-template-columns: 62px minmax(0, 1fr); gap: 6px 12px; }
+    .req .st, .req .sc, .req .sl { grid-column: 2; text-align: left; padding-top: 0; }
+    .req .st { margin-top: 4px; }
+    h1 { font-size: 27px; }
+  }
+  @media (max-width: 420px) {
+    .kpis { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<script type="application/json" id="status-data">
+{
+  "updated": "2026-09-24",
+  "run": {
+    "at": "2026-09-24 13:31",
+    "branch": "slice-3a-stt-provider",
+    "spec": { "passed": 30, "skipped": 15, "failed": 0 },
+    "e2e": { "passed": 16, "skipped": 8, "failed": 0 },
+    "scenarios": { "green": 36, "total": 56 }
+  },
+  "now": {
+    "text": "Главный путь работает от начала до конца: пользователь входит, загружает запись с «Диктофона», её обрабатывает настоящий AssemblyAI, и через несколько минут он читает текст по спикерам. Нельзя пока переименовать или удалить запись и нет папок.",
+    "open": [
+      { "what": "PR вертикального среза 3а ждёт слияния", "why": "AssemblyAI, уведомления от него и проверка зависших записей лежат в ветке, в main их ещё нет.", "link": "https://github.com/sergei-dubinin/verba/pull/5", "linkText": "sergei-dubinin/verba#5" },
+      { "what": "Ручная проверка качества на настоящих записях", "why": "2–3 записи на русском с английскими терминами и 2–4 спикерами: загрузить, дождаться «готово», сверить текст и спикеров на слух. Итог — в ADR 0005. Автотесты этого не проверяют: они ходят в фейк, а не в AssemblyAI." }
+    ],
+    "next": [
+      { "what": "Вертикальный срез 4 — управление записью", "why": "Переименование, удаление с подтверждением, хранение аудио до удаления. Сначала план в docs/plan/04-…md, потом код." },
+      { "what": "Вертикальный срез 5 — папки", "why": "Самый большой: девять требований, фильтр списка, папка при загрузке, удаление папки с записями." }
+    ]
+  },
+  "journey": [
+    { "t": "Войти", "d": "Логин и пароль, пользователей заводит администратор командой.", "st": "ok" },
+    { "t": "Загрузить файл", "d": "С телефона и компьютера, только .m4a, до 3 часов.", "st": "ok" },
+    { "t": "Дождаться обработки", "d": "Статус в списке; при сбое — «Повторить».", "st": "ok" },
+    { "t": "Прочитать транскрипт", "d": "Реплики по спикерам, время начала, только чтение.", "st": "ok" },
+    { "t": "Переименовать или удалить", "d": "Вертикальный срез 4.", "st": "todo" },
+    { "t": "Разложить по папкам", "d": "Вертикальный срез 5.", "st": "todo" }
+  ],
+  "slices": [
+    { "n": "1", "title": "Вход и тестовая обвязка", "what": "Вход по логину и паролю, закрытые страницы, команды администратора. Заодно запущены сценарии как тесты.", "ids": ["BR-17", "BR-23", "NFR-04"], "st": "ok", "stText": "готов", "pr": "#1", "plan": "01-auth.md" },
+    { "n": "2", "title": "Список и транскрипт", "what": "Список записей по датам, автоназвание, экран транскрипта. Проверено на записях, созданных прямо в базе.", "ids": ["BR-09", "BR-10", "BR-11", "BR-12", "BR-13", "BR-14", "BR-18", "BR-22"], "st": "ok", "stText": "готов", "pr": "#2", "plan": "02-list-transcript.md" },
+    { "n": "3", "title": "Загрузка и обработка", "what": "Потоковая загрузка файла, проверка формата и длительности, очередь, воркер, статусы и «Повторить». Провайдер — фейк в формате AssemblyAI.", "ids": ["BR-01", "BR-03", "BR-04", "BR-05", "BR-06", "BR-07", "BR-08", "BR-20", "BR-21"], "st": "ok", "stText": "готов", "pr": "#3", "plan": "03-upload-processing.md" },
+    { "n": "3а", "title": "Настоящий провайдер: AssemblyAI", "what": "Клиент AssemblyAI (регион EU), уведомление о готовности, периодическая проверка незавершённых записей, удаление данных у провайдера.", "ids": ["NFR-02", "BR-04", "BR-06", "BR-08"], "st": "part", "stText": "готов, кроме ручной проверки", "pr": "#5, открыт", "plan": "03a-stt-provider.md" },
+    { "n": "4", "title": "Управление записью", "what": "Переименовать запись, удалить её целиком с подтверждением, хранить аудио до удаления.", "ids": ["BR-15", "BR-16", "BR-19"], "st": "todo", "stText": "не начат", "pr": "", "plan": "" },
+    { "n": "5", "title": "Папки", "what": "Личные плоские папки, выбор и создание папки при загрузке, перенос, переименование, удаление папки, фильтр списка.", "ids": ["BR-02", "BR-24", "BR-25", "BR-26", "BR-27", "BR-28", "BR-29", "BR-30", "BR-31"], "st": "todo", "stText": "не начат", "pr": "", "plan": "" }
+  ],
+  "reqs": [
+    { "g": "Загрузка", "id": "BR-01", "t": "Загрузка аудиофайла с телефона и с компьютера", "st": "ok", "spec": [2, 2], "sl": "3" },
+    { "g": "Загрузка", "id": "BR-02", "t": "«Загрузить» — главное действие, одно нажатие с любого экрана списка", "st": "todo", "spec": [0, 1], "sl": "5", "note": "Кнопка уже есть. Сценарий проверяет и экран папки, поэтому закроется вместе с папками." },
+    { "g": "Загрузка", "id": "BR-03", "t": "При загрузке ничего не нужно настраивать", "st": "ok", "spec": [1, 1], "sl": "3" },
+    { "g": "Загрузка", "id": "BR-20", "t": "Только формат «Диктофона» (.m4a), остальное отклоняется с понятным сообщением", "st": "ok", "spec": [2, 2], "sl": "3" },
+    { "g": "Загрузка", "id": "BR-21", "t": "Запись не длиннее 3 часов, размер файла не ограничен", "st": "ok", "spec": [2, 2], "sl": "3" },
+
+    { "g": "Обработка", "id": "BR-04", "t": "Обработка начинается сама после загрузки", "st": "ok", "spec": [2, 2], "sl": "3, 3а" },
+    { "g": "Обработка", "id": "BR-05", "t": "Спикеры определяются автоматически", "st": "ok", "spec": [1, 1], "sl": "3" },
+    { "g": "Обработка", "id": "BR-06", "t": "Язык определяется сам, английские термины не транслитерируются", "st": "part", "spec": [1, 1], "sl": "3, 3а", "note": "Сценарий зелёный на фейке. Как AssemblyAI справляется с русским и терминами, ещё не проверено руками." },
+    { "g": "Обработка", "id": "BR-07", "t": "Статус записи виден: обрабатывается, готово, ошибка", "st": "ok", "spec": [3, 3], "sl": "3" },
+    { "g": "Обработка", "id": "BR-08", "t": "При ошибке видно, что случилось, и можно повторить", "st": "ok", "spec": [4, 4], "sl": "3, 3а", "note": "Зависшая дольше 3 часов запись сама переходит в «ошибку»." },
+
+    { "g": "Транскрипт", "id": "BR-09", "t": "Текст разбит на реплики, у каждой указан спикер", "st": "ok", "spec": [1, 1], "sl": "2" },
+    { "g": "Транскрипт", "id": "BR-10", "t": "Подряд идущие реплики одного спикера — под одним именем", "st": "ok", "spec": [1, 1], "sl": "2" },
+    { "g": "Транскрипт", "id": "BR-11", "t": "«Спикер 1», «Спикер 2»… по первому появлению, переименовывать нельзя", "st": "ok", "spec": [2, 2], "sl": "2" },
+    { "g": "Транскрипт", "id": "BR-18", "t": "У реплики показано время начала", "st": "ok", "spec": [1, 1], "sl": "2" },
+    { "g": "Транскрипт", "id": "BR-12", "t": "Транскрипт только для просмотра", "st": "ok", "spec": [1, 1], "sl": "2" },
+
+    { "g": "Записи", "id": "BR-13", "t": "Список своих записей, новые сверху, по датам", "st": "ok", "spec": [1, 1], "sl": "2" },
+    { "g": "Записи", "id": "BR-14", "t": "Автоназвание: дата, длительность, число спикеров", "st": "ok", "spec": [2, 2], "sl": "2, 3" },
+    { "g": "Записи", "id": "BR-15", "t": "Запись можно переименовать", "st": "todo", "spec": [0, 2], "sl": "4" },
+    { "g": "Записи", "id": "BR-16", "t": "Аудио хранится, пока запись не удалена", "st": "todo", "spec": [0, 1], "sl": "4", "note": "Аудио и сейчас никуда не пропадает, но сценарий проверяет его вместе с удалением." },
+    { "g": "Записи", "id": "BR-19", "t": "Запись можно удалить целиком, с подтверждением", "st": "todo", "spec": [0, 2], "sl": "4" },
+
+    { "g": "Папки", "id": "BR-24", "t": "Записи группируются по плоским папкам", "st": "todo", "spec": [0, 1], "sl": "5" },
+    { "g": "Папки", "id": "BR-25", "t": "Папки личные", "st": "todo", "spec": [0, 3], "sl": "5" },
+    { "g": "Папки", "id": "BR-26", "t": "Папка при загрузке необязательна, запись без папки — в «Без папки»", "st": "todo", "spec": [0, 2], "sl": "5" },
+    { "g": "Папки", "id": "BR-27", "t": "Новую папку можно создать прямо при загрузке", "st": "todo", "spec": [0, 1], "sl": "5" },
+    { "g": "Папки", "id": "BR-28", "t": "Запись можно перенести в другую папку или убрать из папки", "st": "todo", "spec": [0, 2], "sl": "5" },
+    { "g": "Папки", "id": "BR-29", "t": "Папку можно переименовать", "st": "todo", "spec": [0, 1], "sl": "5" },
+    { "g": "Папки", "id": "BR-30", "t": "Папку можно удалить вместе с записями, с подтверждением и числом записей", "st": "todo", "spec": [0, 3], "sl": "5" },
+    { "g": "Папки", "id": "BR-31", "t": "Фильтр списка: все, «Без папки», конкретная папка", "st": "todo", "spec": [0, 1], "sl": "5" },
+
+    { "g": "Пользователи", "id": "BR-17", "t": "Пользователей заводит администратор, регистрации нет", "st": "ok", "spec": [3, 3], "sl": "1", "note": "Командой pnpm user:create, а не через Prisma Studio." },
+    { "g": "Пользователи", "id": "BR-23", "t": "Вход по логину и паролю", "st": "ok", "spec": [3, 3], "sl": "1" },
+    { "g": "Пользователи", "id": "BR-22", "t": "Каждый видит только свои записи", "st": "ok", "spec": [2, 2], "sl": "2" },
+
+    { "g": "Нефункциональные", "id": "NFR-01", "t": "На телефоне так же удобно, как на компьютере", "st": "none", "spec": [0, 0], "sl": "все", "note": "Экраны свёрстаны по мобильным и десктопным макетам. Отдельного сценария нет." },
+    { "g": "Нефункциональные", "id": "NFR-02", "t": "Транскрибирует внешний провайдер, сменить его — поменять только адаптер", "st": "ok", "spec": [2, 2], "sl": "3а", "note": "Про AssemblyAI знает только src/server/stt/." },
+    { "g": "Нефункциональные", "id": "NFR-03", "t": "Аудио хранится на сервере приложения", "st": "none", "spec": [0, 0], "sl": "3", "note": "Файлы лежат на диске в AUDIO_DIR. Отдельного сценария нет." },
+    { "g": "Нефункциональные", "id": "NFR-04", "t": "Без входа доступна только страница входа", "st": "ok", "spec": [3, 3], "sl": "1, 3а", "note": "Уведомления провайдера без верного секрета тоже отклоняются." },
+    { "g": "Нефункциональные", "id": "NFR-05", "t": "Три экрана: вход, список, транскрипт", "st": "none", "spec": [0, 0], "sl": "1–3", "note": "Все три экрана есть. Отдельного сценария нет." }
+  ],
+  "deferred": [
+    { "what": "Тёмная тема", "when": "после MVP", "why": "Решение 2026-09-23: макеты *-dark.html в первой версии не верстаются." },
+    { "what": "Перетаскивание файла на список", "when": "после MVP", "why": "Требованиями не задано, макет list-desktop-drag.html есть." },
+    { "what": "Переименование спикеров и голосовые профили (BR-32–34)", "when": "после MVP", "why": "Записаны, чтобы не закрыть им дорогу. Риски — в исследовании про голосовые профили." },
+    { "what": "Уведомления AssemblyAI на локальной машине", "when": "не нужно", "why": "На localhost провайдеру некуда стучаться, результат забирает периодическая проверка — до STT_SWEEP_INTERVAL секунд." }
+  ],
+  "journal": [
+    { "d": "2026-09-23", "t": "Требования, сценарии, макеты, заготовка Next.js + Prisma. План из пяти вертикальных срезов." },
+    { "d": "2026-09-24", "t": "Вертикальный срез 1 (вход) — PR #1. Срез 2 (список и транскрипт) — PR #2. Срез 3 (загрузка и обработка на фейке) — PR #3." },
+    { "d": "2026-09-24", "t": "Выбран AssemblyAI; добавлен вертикальный срез 3а. Реализован, PR #5 открыт, осталась ручная проверка качества." },
+    { "d": "2026-09-24", "t": "Создана эта страница. Прогон: test:spec — 30 прошло, 15 пропущено; test:e2e — 16 прошло, 8 пропущено; упавших нет." }
+  ]
+}
+</script>
+
+<div class="wrap">
+  <header class="top">
+    <div class="path">docs/status.html · обновлено <span id="updated"></span></div>
+    <h1>Статус реализации verba</h1>
+    <p class="lede">Что в verba уже работает, что ещё нет и что делаем дальше. Статус требования здесь — это итог прогона сценариев из <code>docs/features/</code>: сценарий зелёный — поведение есть.</p>
+    <nav class="toc" aria-label="Разделы">
+      <a href="#now">Сейчас</a>
+      <a href="#journey">Путь пользователя</a>
+      <a href="#slices">Вертикальные срезы</a>
+      <a href="#reqs">Требования</a>
+      <a href="#run">Прогон тестов</a>
+      <a href="#deferred">Отложено</a>
+      <a href="#journal">Журнал</a>
+    </nav>
+  </header>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="now" id="now"></div>
+
+  <section class="ctx" id="journey">
+    <h2>Путь пользователя</h2>
+    <p class="sub">Основной сценарий из требований по шагам: что из этого человек уже может сделать в приложении.</p>
+    <ol class="journey" id="journey-list"></ol>
+  </section>
+
+  <section class="ctx" id="slices">
+    <h2>Вертикальные срезы</h2>
+    <p class="sub">Реализация идёт этапами, каждый проходит от экрана до базы. Этап закрыт, когда все сценарии его требований зелёные. Порядок и границы — в <code>docs/plan/README.md</code>.</p>
+    <div class="slices" id="slice-list"></div>
+  </section>
+
+  <section class="ctx" id="reqs">
+    <h2>Требования</h2>
+    <p class="sub">Все требования MVP из <code>docs/requirements.md</code>. «Сценарии» — сколько сценариев с тегом требования зелёные из скольких есть.</p>
+    <div class="toolbar">
+      <div class="seg" role="group" aria-label="Фильтр">
+        <button type="button" data-filter="all" aria-pressed="true">Все</button>
+        <button type="button" data-filter="done" aria-pressed="false">Работают</button>
+        <button type="button" data-filter="left" aria-pressed="false">Ещё нет</button>
+      </div>
+      <div class="legend">
+        <span class="pill st-ok"><i></i>работает</span>
+        <span class="pill st-part"><i></i>работает, есть оговорка</span>
+        <span class="pill st-todo"><i></i>не сделано</span>
+        <span class="pill st-none"><i></i>без сценария</span>
+      </div>
+    </div>
+    <div id="req-groups"></div>
+  </section>
+
+  <section class="ctx" id="run">
+    <h2>Прогон тестов</h2>
+    <p class="sub" id="run-sub"></p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Набор</th><th>Что проверяет</th><th>Прошло</th><th>Пропущено</th><th>Упало</th></tr></thead>
+        <tbody id="run-rows"></tbody>
+      </table>
+    </div>
+    <p style="color:var(--muted);font-size:14px;margin-top:12px">Пропущены сценарии, для которых шагов ещё нет: это требования вертикальных срезов 4 и 5. Посмотреть, каких фраз не хватает, — <code>pnpm test:missing</code>.</p>
+  </section>
+
+  <section class="ctx" id="deferred">
+    <h2>Отложено и вне MVP</h2>
+    <p class="sub">Решения «не сейчас», чтобы их не искать по планам.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Что</th><th>Когда</th><th>Почему</th></tr></thead>
+        <tbody id="deferred-rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="ctx" id="journal">
+    <h2>Журнал</h2>
+    <p class="sub">Что и когда поменялось, в порядке дат.</p>
+    <div class="journal" id="journal-list"></div>
+  </section>
+
+  <footer>
+    Источник правды — прогон <code>pnpm test</code>; этот файл — снимок на дату в шапке. Порядок работ — <code>docs/plan/README.md</code>, требования — <code>docs/requirements.md</code>.
+  </footer>
+</div>
+
+<script>
+(function () {
+  var D = JSON.parse(document.getElementById('status-data').textContent);
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var $ = function (id) { return document.getElementById(id); };
+  var fmtDate = function (iso) {
+    var m = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+    var p = iso.split('-');
+    return (+p[2]) + ' ' + m[+p[1] - 1] + ' ' + p[0];
+  };
+  var PILL = { ok: 'работает', part: 'с оговоркой', todo: 'не сделано', none: 'без сценария' };
+  var pill = function (st, text) { return '<span class="pill st-' + st + '"><i></i>' + esc(text) + '</span>'; };
+
+  $('updated').textContent = fmtDate(D.updated);
+
+  // Сводка
+  var br = D.reqs.filter(function (r) { return r.id.indexOf('BR-') === 0; });
+  var brDone = br.filter(function (r) { return r.st === 'ok' || r.st === 'part'; }).length;
+  var slDone = D.slices.filter(function (s) { return s.st !== 'todo'; }).length;
+  var failed = D.run.spec.failed + D.run.e2e.failed;
+  var kpi = function (lbl, val, of, hint, cls) {
+    var bar = of ? '<div class="bar"><i style="width:' + Math.round(val / of * 100) + '%"></i></div>' : '';
+    return '<div class="kpi ' + (cls || '') + '"><span class="lbl">' + lbl + '</span><span class="val">' + val + (of ? ' <small>из ' + of + '</small>' : '') + '</span>' + bar + '<span class="hint">' + hint + '</span></div>';
+  };
+  $('kpis').innerHTML =
+    kpi('Вертикальные срезы', slDone, D.slices.length, 'у 3а осталась ручная проверка') +
+    kpi('Бизнес-требования MVP', brDone, br.length, 'сценарии зелёные') +
+    kpi('Сценарии', D.run.scenarios.green, D.run.scenarios.total, 'остальные ждут срезов 4 и 5') +
+    kpi('Упавшие тесты', failed, 0, 'прогон ' + fmtDate(D.run.at.split(' ')[0]), failed ? '' : 'clean');
+
+  // Сейчас и дальше
+  var item = function (x) {
+    return '<li><b>' + esc(x.what) + '</b>' + (x.link ? ' — <a href="' + esc(x.link) + '">' + esc(x.linkText) + '</a>' : '') + '<br><span>' + esc(x.why) + '</span></li>';
+  };
+  $('now').innerHTML =
+    '<div class="panel" id="now-panel"><h2>Где мы сейчас</h2><p>' + esc(D.now.text) + '</p><ul>' + D.now.open.map(item).join('') + '</ul></div>' +
+    '<div class="panel"><h2>Что дальше</h2><ol>' + D.now.next.map(item).join('') + '</ol></div>';
+
+  // Путь пользователя
+  $('journey-list').innerHTML = D.journey.map(function (j, i) {
+    return '<li class="' + j.st + '"><span class="n">Шаг ' + (i + 1) + '</span><b>' + esc(j.t) + '</b>' +
+      pill(j.st, j.st === 'ok' ? 'работает' : 'ещё нет') + '<span class="d">' + esc(j.d) + '</span></li>';
+  }).join('');
+
+  // Срезы
+  $('slice-list').innerHTML = D.slices.map(function (s) {
+    var side = pill(s.st, s.stText);
+    if (s.pr) side += '<span>PR ' + esc(s.pr) + '</span>';
+    side += s.plan ? '<span>план: <code>' + esc(s.plan) + '</code></span>' : '<span>плана ещё нет</span>';
+    return '<div class="slice ' + s.st + '"><div class="num">' + esc(s.n) + '</div><div><h3>' + esc(s.title) + '</h3><p>' + esc(s.what) + '</p><div class="ids">' +
+      s.ids.map(function (id) { return '<span class="tag">' + id + '</span>'; }).join('') + '</div></div><div class="side">' + side + '</div></div>';
+  }).join('');
+
+  // Требования
+  var groups = [];
+  D.reqs.forEach(function (r) { if (groups.indexOf(r.g) < 0) groups.push(r.g); });
+  $('req-groups').innerHTML = groups.map(function (g) {
+    var rows = D.reqs.filter(function (r) { return r.g === g; });
+    var done = rows.filter(function (r) { return r.st === 'ok' || r.st === 'part'; }).length;
+    return '<div class="group" data-group><div class="group-head"><h3>' + esc(g) + '</h3><span class="count">' + done + ' из ' + rows.length + ' работают</span></div><div class="list">' +
+      rows.map(function (r) {
+        var sc = r.spec[1] ? 'сценарии ' + r.spec[0] + '/' + r.spec[1] : '—';
+        return '<div class="req" data-st="' + r.st + '"><span class="id">' + r.id + '</span><span class="txt">' + esc(r.t) +
+          (r.note ? '<span class="note">' + esc(r.note) + '</span>' : '') + '</span><span class="st">' + pill(r.st, PILL[r.st]) +
+          '</span><span class="sc">' + sc + '</span><span class="sl" title="Вертикальный срез">' + esc(r.sl) + '</span></div>';
+      }).join('') + '</div></div>';
+  }).join('');
+
+  var buttons = document.querySelectorAll('.seg button');
+  var apply = function (f) {
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.filter === f)); });
+    document.querySelectorAll('.req').forEach(function (el) {
+      var st = el.dataset.st;
+      var show = f === 'all' || (f === 'done' && (st === 'ok' || st === 'part')) || (f === 'left' && (st === 'todo' || st === 'none'));
+      el.classList.toggle('hidden', !show);
+    });
+    document.querySelectorAll('[data-group]').forEach(function (g) {
+      g.classList.toggle('hidden', !g.querySelector('.req:not(.hidden)'));
+    });
+    try { localStorage.setItem('verba-status-filter', f); } catch (e) {}
+  };
+  buttons.forEach(function (b) { b.addEventListener('click', function () { apply(b.dataset.filter); }); });
+  var saved = null;
+  try { saved = localStorage.getItem('verba-status-filter'); } catch (e) {}
+  apply(saved === 'done' || saved === 'left' ? saved : 'all');
+
+  // Прогон
+  $('run-sub').innerHTML = 'Последний прогон — ' + esc(fmtDate(D.run.at.split(' ')[0])) + ', ' + esc(D.run.at.split(' ')[1]) + ', ветка <code>' + esc(D.run.branch) + '</code>.';
+  var runRow = function (name, what, r) {
+    return '<tr><td><code>' + name + '</code></td><td>' + what + '</td><td class="num">' + r.passed + '</td><td class="num">' + r.skipped + '</td><td class="num">' + r.failed + '</td></tr>';
+  };
+  $('run-rows').innerHTML =
+    runRow('pnpm test:spec', 'Логика сервисов напрямую, без браузера. Секунды.', D.run.spec) +
+    runRow('pnpm test:e2e', 'Собранное приложение в браузере.', D.run.e2e);
+
+  $('deferred-rows').innerHTML = D.deferred.map(function (x) {
+    return '<tr><td>' + esc(x.what) + '</td><td style="white-space:nowrap">' + esc(x.when) + '</td><td>' + esc(x.why) + '</td></tr>';
+  }).join('');
+
+  $('journal-list').innerHTML = D.journal.map(function (j) {
+    return '<div><time datetime="' + j.d + '">' + j.d + '</time><span>' + esc(j.t) + '</span></div>';
+  }).join('');
+})();
+</script>
+</body>
+</html>

@@ -38,6 +38,12 @@ export type ScenarioContext = {
   uploadError?: unknown;
   // Реплики последнего ответа провайдера — для «транскрипт доступен».
   sttUtterances?: { speaker: string; startMs: number; text: string }[];
+  // Сырой ответ, который последним вернул провайдер.
+  sttRaw?: unknown;
+  // Ответ на последнее уведомление: HTTP-статус вебхука (e2e) или итог
+  // сервиса (домен).
+  webhookStatus?: number;
+  notificationResult?: string;
 };
 
 export const test = base.extend<{ ctx: ScenarioContext; cleanDb: void }>({

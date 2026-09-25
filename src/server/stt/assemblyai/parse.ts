@@ -11,7 +11,7 @@ import type { SttTranscript } from "../types";
 
 type Utterance = { speaker: unknown; start: unknown; end: unknown; text: unknown };
 
-const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null;
+export const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null;
 
 export function parseAssemblyAi(raw: unknown): SttTranscript {
   if (!isRecord(raw)) throw new SttParseError("ответ не объект");
